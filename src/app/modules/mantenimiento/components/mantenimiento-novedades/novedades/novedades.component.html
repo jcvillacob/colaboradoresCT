@@ -1,0 +1,248 @@
+<h2 class="text-3xl font-bold pt-5 ml-5">Novedades de los Conductores</h2>
+
+<section class="p-3 sm:p-5">
+  <div class="mx-auto max-w-screen-xl lg:px-12">
+    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+      <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+        <div class="w-full md:w-1/2">
+          <form class="flex items-center">
+            <label for="simple-search" class="sr-only">Buscar</label>
+            <div class="relative w-full">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                  viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clip-rule="evenodd" />
+                </svg>
+              </div>
+              <input type="text" id="simple-search" (input)="filtroTabla()" [(ngModel)]="filtro" name="filtro"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Buscar">
+            </div>
+          </form>
+        </div>
+        <div
+          class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+          <button type="button" data-modal-target="novedades-modal" data-modal-toggle="novedades-modal"
+            class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+            <svg class="w-6 h-6 text-white mr-1 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5 12h14m-7 7V5" />
+            </svg>
+            Añadir Novedad
+          </button>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" class="px-4 py-3">Cedula</th>
+              <th scope="col" class="px-4 py-3">Novedad</th>
+              <th scope="col" class="px-4 py-3">Descripción</th>
+              <th scope="col" class="px-4 py-3">Mes</th>
+              <th scope="col" class="px-4 py-3">Año</th>
+              <th scope="col" class="px-4 py-3">
+                <span class="sr-only">Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody *ngIf="novedades.length">
+            <tr class="bg-white border-b hover:bg-gray-50" *ngFor="let item of novedadesFiltro">
+              <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{
+                item.Cedula }}</th>
+              <td class="px-4 py-3">{{ item.nombre }}</td>
+              <td class="px-4 py-3">{{ item.Descripcion }}</td>
+              <td class="px-4 py-3">{{ item.Mes }}</td>
+              <td class="px-4 py-3">{{ item['Año'] }}</td>
+              <td class="px-4 py-3 flex items-center justify-end">
+                <button id="apple-imac-27-dropdown-button" data-dropdown-toggle="apple-imac-27-dropdown"
+                  class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
+                  type="button">
+                  <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                  </svg>
+                </button>
+                <div id="apple-imac-27-dropdown"
+                  class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                  <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                    aria-labelledby="apple-imac-27-dropdown-button">
+                    <li>
+                      <a href="#"
+                        class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Show</a>
+                    </li>
+                    <li>
+                      <a href="#"
+                        class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                    </li>
+                  </ul>
+                  <div class="py-1">
+                    <a href="#"
+                      class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <nav *ngIf="novedades.length"
+        class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+        aria-label="Table navigation">
+        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+          Mostrando
+          <span class="font-semibold text-gray-900 dark:text-white">{{ (pageNumber - 1) * pageSize + 1 }}-{{ (pageNumber
+            - 1) * pageSize + novedadesFiltro.length }}</span>
+          de
+          <span class="font-semibold text-gray-900 dark:text-white">{{ totalNovedades }}</span>
+        </span>
+        <ul class="inline-flex items-stretch -space-x-px">
+          <!-- Botón Prev -->
+          <li>
+            <button (click)="goToPreviousPage(); $event.preventDefault()" [disabled]="pageNumber <= 1"
+              class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <span class="sr-only">Previous</span>
+              <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+          </li>
+          <!-- Botones de números de página -->
+          <li *ngFor="let page of pages">
+            <button href="#" (click)="goToPage(page); $event.preventDefault()"
+              [class.bg-slate-100]="page === pageNumber"
+              class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              {{ page }}
+            </button>
+          </li>
+          <!-- Mostrar "..." para indicar un rango más amplio de páginas -->
+          <li *ngIf="totalPages > 5 && pageNumber < totalPages - 2">
+            <button href="#"
+              class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</button>
+          </li>
+
+          <li *ngIf="totalPages > 5">
+            <button href="#" (click)="goToPage(totalPages); $event.preventDefault()"
+              [class.active]="pageNumber === totalPages"
+              class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              {{ totalPages }}
+            </button>
+          </li>
+          <!-- Botón Post -->
+          <li>
+            <button (click)="goToNextPage(); $event.preventDefault()"
+              [disabled]="pageNumber * pageSize >= totalNovedades"
+              class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <span class="sr-only">Next</span>
+              <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+          </li>
+        </ul>
+      </nav>
+      <div *ngIf="!novedades.length" class="w-full flex justify-center py-10 text-xl">
+        No se encontraron datos disponibles
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- Modal para añadir Novedad -->
+<div id="novedades-modal" tabindex="-1" aria-hidden="true"
+  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div class="relative m-2 mt-40 rounded-lg w-full max-w-2xl bg-slate-100">
+    <!-- Modal header -->
+    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+        Ingresar Novedad
+      </h3>
+      <button type="button"
+        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+        data-modal-hide="novedades-modal">
+        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+        </svg>
+        <span class="sr-only">Close modal</span>
+      </button>
+    </div>
+    <!-- Modal content -->
+    <form class="max-w-lg mx-auto p-8 pt-16 rounded-lg" (ngSubmit)="onSubmit()" #form="ngForm">
+      <div class="mb-6">
+        <label for="year" class="block mb-2 text-sm font-medium text-gray-700">Año</label>
+        <select [(ngModel)]="year" id="year" name="year"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5">
+          <option value="{{y}}" *ngFor="let y of years">{{ y }}</option>
+        </select>
+      </div>
+      <div class="mb-6">
+        <label for="months" class="block mb-2 text-sm font-medium text-gray-700">Mes</label>
+        <select [(ngModel)]="month" id="months" name="months"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5">
+          <option value="{{i + 1}}" *ngFor="let mes of meses; let i = index">{{ mes }}</option>
+        </select>
+      </div>
+      <div class="mb-6">
+        <label for="id" class="block mb-2 text-sm font-medium text-gray-700">Cédula</label>
+        <input [(ngModel)]="cedula" type="text" id="id" name="id" required
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5"
+          placeholder="123456789">
+      </div>
+      <div class="mb-6">
+        <label for="news" class="block mb-2 text-sm font-medium text-gray-700">Novedad</label>
+        <select [(ngModel)]="novedad" id="news" name="news" required
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5">
+          <option selected disabled value="">Elige una opción</option>
+          <option value="{{novedad.Id}}" *ngFor="let novedad of listaNovedades">{{ novedad.nombre }}</option>
+        </select>
+      </div>
+      <div class="mb-6">
+        <label for="description" class="block mb-2 text-sm font-medium text-gray-700">Descripción de la Novedad</label>
+        <textarea [(ngModel)]="descripcion" id="description" name="description" rows="4"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5"
+          placeholder="Escribe aquí..."></textarea>
+      </div>
+      <button type="submit" [disabled]="!form.valid" data-modal-hide="novedades-modal"
+        class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Enviar</button>
+    </form>
+
+  </div>
+</div>
+
+
+<!-- Toast Success -->
+<div *ngIf="showToast" id="toast-success"
+  class="fixed top-24 right-5 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+  role="alert">
+  <div
+    class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path
+        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+    </svg>
+    <span class="sr-only">Check icon</span>
+  </div>
+  <div class="ms-3 text-sm font-normal">Guardada Correctamente</div>
+  <button type="button"
+    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+    data-dismiss-target="#toast-success" aria-label="Close">
+    <span class="sr-only">Close</span>
+    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+    </svg>
+  </button>
+</div>

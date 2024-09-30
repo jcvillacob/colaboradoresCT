@@ -1,0 +1,189 @@
+<div class="w-full flex justify-center items-center">
+  <div class="relative mb-5 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-lg bg-white">
+    <!-- Botón para ir atrás -->
+    <button (click)="goBack()"
+      class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"
+        stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+      </svg>
+    </button>
+
+    <!-- Editar y Eliminar -->
+    <div class="absolute top-0 right-5 mt-5">
+      <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal"
+        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        type="button">
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+          viewBox="0 0 16 3">
+          <path
+            d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+        </svg>
+      </button>
+
+      <!-- Dropdown menu -->
+      <div id="dropdownDotsHorizontal"
+        class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
+          <li>
+            <a id="updateProductButton" class="block px-4 py-2 hover:bg-gray-100 hover:cursor-pointer">Editar</a>
+          </li>
+          <li>
+            <a data-modal-target="popup-modal" data-modal-toggle="popup-modal"
+              class="block px-4 py-2 hover:bg-gray-100 hover:cursor-pointer">Eliminar</a>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+
+    <div class="text-left md:pl-10">
+      <!-- Nombre del Usuario -->
+      <div class="flex items-center mb-2">
+        <i class="text-3xl mr-4" [ngClass]="usuario.Icono" [ngStyle]="{'color': usuario.Color}"></i>
+        <h3 class="text-2xl font-semibold text-gray-900">{{ usuario.Nombre }}</h3>
+      </div>
+
+      <!-- Cedula del Usuario -->
+      <div class="flex items-center mb-4">
+        <i class="fa-solid fa-address-card text-gray-500 mr-4"></i>
+        <div>
+          <span class="text-gray-700 font-medium mr-2">Cédula:</span>
+          <span class="text-sm text-gray-500">{{ usuario.Cedula }}</span>
+        </div>
+      </div>
+
+      <!-- Correo del Usuario -->
+      <div class="flex items-center mb-4">
+        <i class="fa-solid fa-envelope text-gray-500 mr-4"></i>
+        <div>
+          <span class="text-gray-700 font-medium mr-2">Correo Electrónico:</span>
+          <span class="text-sm text-gray-500">{{ usuario.Email }}</span>
+        </div>
+      </div>
+
+      <!-- Cargo del Usuario -->
+      <div class="flex items-center mb-4">
+        <i class="fa-solid fa-briefcase text-gray-500 mr-4"></i>
+        <div>
+          <span class="text-gray-700 font-medium mr-2">Cargo:</span>
+          <span class="text-sm text-gray-500">{{ usuario.Cargo }}</span>
+        </div>
+      </div>
+
+      <!-- Area del Usuario -->
+      <div class="flex items-center mb-4">
+        <i class="fa-solid fa-building text-gray-500 mr-4"></i>
+        <div>
+          <span class="text-gray-700 font-medium mr-2">Area:</span>
+          <span class="text-sm text-gray-500">{{ usuario.Area }}</span>
+        </div>
+      </div>
+
+      <!-- Estado del Usuario -->
+      <div class="flex items-center mb-4">
+        <i class="fa-solid fa-user-check text-gray-500 mr-4"></i>
+        <div>
+          <span class="text-gray-700 font-medium mr-2">Estado:</span>
+          <span *ngIf="usuario.Estado" (click)="updateStateUsuario()"
+            class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded hover:cursor-pointer">Activo</span>
+          <span *ngIf="!usuario.Estado" (click)="updateStateUsuario()"
+            class="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded hover:cursor-pointer">Inactivo</span>
+        </div>
+      </div>
+
+      <!-- Roles del Usuario -->
+      <div class="flex items-center">
+        <i class="fa-solid fa-list-check text-gray-500 mr-4"></i>
+        <div class="">
+          <p class="text-gray-700 font-medium mr-2">Roles Generales:</p>
+        </div>
+      </div>
+      <div class="my-4 ml-7">
+        <ul
+          class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+          <li class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600" *ngFor="let rol of roles">
+            <div class="flex items-center ps-3">
+              <input [id]="'checkbox' + rol.RolID" type="checkbox" value="" (click)="asignarRol(rol.RolID, $event)"
+                [checked]="rol.asignado"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+              <label [for]="'checkbox' + rol.RolID"
+                class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ rol.NombreRol
+                }}</label>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+
+      <!-- Sub Roles del Usuario -->
+      <div class="flex items-center mb-4">
+        <i class="fa-solid fa-list-check text-gray-500 mr-4"></i>
+        <div class="">
+          <p class="text-gray-700 font-medium mr-2">Sub Roles:</p>
+        </div>
+      </div>
+      <div *ngFor="let rol of roles">
+        <div *ngIf="rol.asignado" class="ml-4">
+          <h3 class="mb-2 font-semibold text-gray-900 dark:text-white">{{ rol.NombreRol }}</h3>
+          <ul
+            class="items-center w-full mb-5 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600"
+              *ngFor="let subrol of rol.subroles">
+              <div class="flex items-center ps-3">
+                <input [id]="'checkbox-list' + subrol.SubrolID" type="checkbox" [checked]="subrol.asignado" value=""
+                  (click)="asignarSubrol(subrol.SubrolID, $event)"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                <label [for]="'checkbox-list' + subrol.SubrolID"
+                  class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ subrol.NombreSubrol
+                  }}</label>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- -------------------------------------- -->
+
+
+
+
+
+      <!-- Modal para eliminar el Usuario -->
+      <div id="popup-modal" tabindex="-1"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+          <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button"
+              class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              data-modal-hide="popup-modal">
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+              </svg>
+              <span class="sr-only">Cerrar modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+              <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">¿Estas seguro que quieres eliminar
+                este
+                Usuario?</h3>
+              <button (click)="eliminarUsuario()" data-modal-hide="popup-modal" type="button"
+                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                Si, Estoy Seguro
+              </button>
+              <button data-modal-hide="popup-modal" type="button"
+                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
+                cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

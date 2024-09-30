@@ -1,0 +1,61 @@
+<div class="container mx-auto md:px-4" *ngIf="capacitacion">
+  <!-- Botón para ir atrás -->
+  <button (click)="goBack()"
+    class="inline-flex items-center p-2 mb-4 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"
+      stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+    </svg>
+  </button>
+
+  <app-spinner *ngIf="spinner"></app-spinner>
+
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-4" *ngIf="!spinner">
+    <!-- Left section with main video and description, taking up 3/4 of the space on large screens -->
+    <div class="p-2 lg:col-span-3 bg-white shadow-lg rounded-lg">
+      <!-- Main video -->
+      <div *ngIf="capacitacion" class="aspect-w-16 aspect-h-9 bg-gray-200">
+
+        <!-- PDF -->
+        <!-- <iframe *ngIf="capacitacion.Tipo === 'PDF'" [src]="safeUrl" class="pdf-iframe" frameborder="0"></iframe> -->
+        <pdf-viewer *ngIf="capacitacion.Tipo === 'PDF'" [src]="pdfSrc" [original-size]="false"></pdf-viewer>
+
+
+        <!-- Video -->
+        <video #videoPlayer controls class="w-full h-full" *ngIf="capacitacion.Tipo === 'Video'">
+          <source [src]="capacitacion?.UrlFile" type="video/mp4">
+          Your browser does not support videos.
+        </video>
+      </div>
+
+
+
+
+      <!-- Video description section -->
+      <div class="mt-6 p-5">
+        <!-- Video title -->
+        <h3 class="text-2xl font-semibold text-gray-800 mb-3">{{ capacitacion.Titulo }}</h3>
+
+        <!-- Video description -->
+        <p class="text-gray-700 whitespace-pre-line text-justify">{{ capacitacion.Descripcion }}</p>
+
+        <!-- Button to take the test -->
+        <!-- Assuming you have a method in your component to handle test navigation -->
+        <a href="{{ capacitacion.Test }}" target="_blank"
+          class="mt-5 inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700 transition-colors">
+          Realizar Test
+        </a>
+      </div>
+    </div>
+
+    <!-- Sección derecha con miniaturas de videos, ahora solo ocupa 1/4 del espacio en pantallas grandes -->
+    <div class="lg:col-span-1">
+      <!-- Miniatura de video 1 -->
+      <div class="mb-5 hover:cursor-pointer bg-white rounded-lg overflow-hidden" *ngFor="let capac of capacitaciones"
+        [routerLink]="['../', capac.capacitacionID]">
+        <img [src]="capac.UrlImg" alt="Miniatura 1" class="w-full h-auto">
+        <p class="my-2 ml-2 pb-2 text-sm text-gray-800">{{ capac.Titulo }}</p>
+      </div>
+    </div>
+  </div>
+</div>

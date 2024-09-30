@@ -1,0 +1,51 @@
+<!-- Tabla -->
+<div class="relative overflow-auto mb-20 shadow-md sm:rounded-lg">
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="px-6 py-3">
+          Titulo
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Autor
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Fecha
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Acción
+        </th>
+      </tr>
+    </thead>
+    <tbody  *ngIf="datosTabla.length">
+      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+        *ngFor="let publicacion of datosTabla">
+        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          {{ publicacion.Titulo }}
+        </th>
+        <td class="px-6 py-4">
+          <span *ngIf="publicacion.Autor">{{ publicacion.Autor }}</span>
+          <span *ngIf="!publicacion.Autor">No hay Autor</span>
+        </td>
+        <td class="px-6 py-4">
+          {{ publicacion.FechaCreacion | date:'dd/MM/yyyy':'UTC'}}
+        </td>
+        <td class="flex items-center px-6 py-4" *ngIf="tipo === 'Noticias'">
+          <a routerLink="../blogs"
+            class="font-medium text-blue-600 dark:text-blue-500 hover:cursor-pointer hover:underline">Edit</a>
+          <a (click)="eliminarPublicacion(publicacion.NoticiaID)"
+            class="font-medium text-red-600 dark:text-red-500 hover:underline hover:cursor-pointer ms-3">Remove</a>
+        </td>
+        <td class="flex items-center px-6 py-4" *ngIf="tipo === 'Blogs'">
+          <a [routerLink]="['../blogs', publicacion.BlogID]" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Ver</a>
+          <a (click)="eliminarPublicacion(publicacion.BlogID)"
+             class="font-medium text-red-600 dark:text-red-500 hover:underline hover:cursor-pointer ms-3">Remove</a>
+      </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!datosTabla.length" class="w-full flex justify-center py-10 text-xl">
+    No se encontraron publicaciones disponibles
+  </div>
+</div>

@@ -1,0 +1,376 @@
+<h1 class="text-5xl font-bold mt-3 mb-2 ml-10">Usuarios</h1>
+
+<section class="p-3 sm:p-5">
+  <div class="mx-auto max-w-screen-xl px-4">
+    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+      <!-- Filtros y Busqueda -->
+      <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+        <div class="w-full md:w-1/2">
+          <form class="flex items-center">
+            <label for="simple-search" class="sr-only">Buscar</label>
+            <div class="relative w-full">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                  viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clip-rule="evenodd" />
+                </svg>
+              </div>
+              <input type="text" id="simple-search" (input)="filtroTabla()" [(ngModel)]="filtro" name="filtro"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Search" required="">
+            </div>
+          </form>
+        </div>
+        <div
+          class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+          <!-- <button type="button"
+            class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+            Editar Usuario
+          </button> -->
+          <button type="button" id="rolesModalButton" data-modal-target="rolesModal" data-modal-toggle="rolesModal"
+            class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+            Roles
+          </button>
+          <button type="button" (click)="actualizarBuk()"
+            class="flex items-center justify-center text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+            <span *ngIf="!loading">Actualizar BUK</span>
+            <div role="status" *ngIf="loading">
+              <svg aria-hidden="true"
+                class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300"
+                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor" />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill" />
+              </svg>
+              <span class="sr-only">Loading...</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabla para Usuarios -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" class="px-4 py-3">Nombre</th>
+              <th scope="col" class="px-4 py-3">Username</th>
+              <th scope="col" class="px-4 py-3">Cedula</th>
+              <th scope="col" class="px-4 py-3">Cargo</th>
+              <th scope="col" class="px-4 py-3">Area</th>
+              <th scope="col" class="px-4 py-3">Email</th>
+              <th scope="col" class="px-4 py-3">Estado</th>
+              <th scope="col" class="px-4 py-3">
+                <span class="sr-only">Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b dark:border-gray-700" *ngFor="let user of usuariosFiltrados; let i = index">
+              <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{
+                user.Nombre }}</th>
+              <td class="px-4 py-3">{{ user.Username }}</td>
+              <td class="px-4 py-3">{{ user.Cedula }}</td>
+              <td class="px-4 py-3">{{ user.Cargo }}</td>
+              <td class="px-4 py-3">{{ user.Area }}</td>
+              <td class="px-4 py-3">{{ user.Email }}</td>
+              <td class="px-4 py-3">
+                <span *ngIf="user.Estado"
+                  class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Activo</span>
+                <span *ngIf="!user.Estado"
+                  class="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Inactivo</span>
+              </td>
+              <td class="px-4 py-3 flex items-center justify-end gap-3">
+                <button id="crearUsuarioModalButton" data-modal-target="crearUsuarioModal" data-modal-toggle="crearUsuarioModal" (click)="asignarUsuario(user)"
+                  class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
+                  type="button">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button id="usuario" [routerLink]="['./detalles', user.UsuarioID]"
+                  class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
+                  type="button">
+                  <i class="fa-solid fa-user-pen"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+        aria-label="Table navigation">
+        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+          Showing
+          <span class="font-semibold text-gray-900 dark:text-white">1-10</span>
+          of
+          <span class="font-semibold text-gray-900 dark:text-white">1000</span>
+        </span>
+        <ul class="inline-flex items-stretch -space-x-px">
+          <li>
+            <a href="#"
+              class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <span class="sr-only">Previous</span>
+              <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a href="#"
+              class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+          </li>
+          <li>
+            <a href="#"
+              class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
+          </li>
+          <li>
+            <a href="#" aria-current="page"
+              class="flex items-center justify-center text-sm z-10 py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
+          </li>
+          <li>
+            <a href="#"
+              class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</a>
+          </li>
+          <li>
+            <a href="#"
+              class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">100</a>
+          </li>
+          <li>
+            <a href="#"
+              class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              <span class="sr-only">Next</span>
+              <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</section>
+
+
+<!-- Modal para Editar Usuarios -->
+<div id="crearUsuarioModal" tabindex="-1" aria-hidden="true"  *ngIf="usuarios.length"
+  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+  <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+    <!-- Modal content -->
+    <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+      <!-- Modal header -->
+      <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Editar Usuario
+        </h3>
+        <button type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          data-modal-toggle="crearUsuarioModal">
+          <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"></path>
+          </svg>
+          <span class="sr-only">Cerrar</span>
+        </button>
+      </div>
+      <!-- Modal body -->
+      <form (ngSubmit)="editarUsuario()">
+        <div class="grid gap-4 mb-4 sm:grid-cols-2">
+          <div>
+            <label for="nombre" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+            <input type="text" name="nombre" id="nombre" [(ngModel)]="usuarioEdit.Nombre"
+              class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Nombre" [disabled]="true">
+          </div>
+          <div>
+            <label for="cedula" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cedula</label>
+            <input type="text" name="cedula" id="cedula" [(ngModel)]="usuarioEdit.Cedula"
+              class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Cédula" [disabled]="true">
+          </div>
+          <div>
+            <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+            <input type="text" name="username" id="username" [(ngModel)]="usuarioEdit.Username"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Username" required>
+          </div>
+          <div>
+            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+            <input type="email" name="email" id="email" [(ngModel)]="usuarioEdit.Email"
+              class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Correo Electrónico" [disabled]="true">
+          </div>
+          <div>
+            <label for="cargo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cargo</label>
+            <input type="text" name="cargo" id="cargo" [(ngModel)]="usuarioEdit.Cargo"
+              class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Cargo desempeñado" [disabled]="true">
+          </div>
+          <div>
+            <label for="area" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Area</label>
+            <select id="area" [(ngModel)]="usuarioEdit.Area" name="area" [disabled]="true"
+              class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+              <option [defaultSelected]="true" value="" disabled>Seleccionar área</option>
+              <option value="Innovación">Innovacion</option>
+              <option value="Comercial">Comercial</option>
+              <option value="Experiencia-Cliente">Experiencia del Cliente</option>
+              <option value="Mantenimiento">Mantenimiento</option>
+            </select>
+          </div>
+          <div>
+            <label for="password"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña</label>
+            <input type="password" name="password" id="password"  [(ngModel)]="usuarioEdit.Password"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Contraseña" required>
+          </div>
+        </div>
+        <button type="submit" data-modal-toggle="crearUsuarioModal"
+          class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+          <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+              clip-rule="evenodd"></path>
+          </svg>
+          Editar Usuario
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal para Roles y Sub Roles -->
+<div id="rolesModal" tabindex="-1" aria-hidden="true"
+  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+  <div class="relative lg:pt-32 p-4 w-full max-w-2xl h-full md:h-auto">
+    <!-- Modal content -->
+    <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 overflow-y-auto"  [style.max-height]="'80vh'">
+      <!-- Modal header -->
+      <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Roles y Sub Roles
+        </h3>
+        <button type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          data-modal-toggle="rolesModal">
+          <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"></path>
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
+      </div>
+      <!-- Modal body -->
+      <!-- Formulario de Rol -->
+      <form action="#" (ngSubmit)="crearRol()" [style.max-height]="'70vh'">
+        <div class="grid gap-4 mb-4 sm:grid-cols-2">
+          <div>
+            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre de Rol</label>
+            <input type="text" id="name" [(ngModel)]="crearRolNombre" name="name"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Escribe el nombre del rol" required>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="description"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
+            <textarea id="description" rows="3" [(ngModel)]="crearRolDescripcion" name="description"
+              class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Escribe la descripción del rol"></textarea>
+          </div>
+        </div>
+        <button type="submit"
+          class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+          <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+              clip-rule="evenodd"></path>
+          </svg>
+          Añadir Role
+        </button>
+      </form>
+
+      <!-- Lista de Roles y Sub Roles -->
+      <div class="flex flex-col sm:flex-row gap-2">
+        <div class="mt-4">
+          <h3 class="mb-4 font-semibold text-gray-900 dark:text-white">Roles</h3>
+          <ul
+            class="w-48 text-sm ml-4 font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <li *ngFor="let rol of roles" class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
+              <div class="flex items-center ps-3">
+                <input [id]="'list-radio' + rol.RolID" type="radio" value="" name="list-radio"
+                  (click)="seleccionarRol(rol)"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                <label [for]="'list-radio' + rol.RolID"
+                  class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ rol.NombreRol
+                  }}</label>
+                <i class="fa-solid fa-delete-left py-3 mr-4 text-sm text-gray-900 hover:cursor-pointer"
+                  (click)="eliminarRol(rol.RolID)"></i>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+
+        <div class="mt-4" *ngIf="rolSeleccionado">
+          <h3 class="mb-4 font-semibold text-gray-900 dark:text-white">Sub Roles</h3>
+          <ul
+            class="w-auto text-sm ml-4 font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <li *ngFor="let subrol of rolSeleccionado.subroles"
+              class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
+              <div class="flex items-center ps-3">
+                <span class="w-full py-3 mx-4 text-sm font-medium text-gray-900 dark:text-gray-300">{{
+                  subrol.NombreSubrol }}</span>
+                <i class="fa-solid fa-delete-left py-3 mr-4 text-sm text-gray-900 hover:cursor-pointer"
+                  (click)="eliminarSubrol(subrol.SubrolID)"></i>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Formulario de Sub Rol -->
+      <form action="#" *ngIf="rolSeleccionado" class="mt-5" (ngSubmit)="crearSubrol()">
+        <div class="grid gap-4 mb-4 sm:grid-cols-2">
+          <div>
+            <label for="nameS" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre de Sub
+              Rol</label>
+            <input type="text" id="nameS" [(ngModel)]="crearSubrolNombre" name="nameS"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Escribe el nombre del sub rol" required>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="descriptionS"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
+            <textarea id="descriptionS" rows="3" [(ngModel)]="crearSubrolDescripcion" name="descriptionS"
+              class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Escribe la descripción del sub rol"></textarea>
+          </div>
+        </div>
+        <button type="submit"
+          class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+          <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+              clip-rule="evenodd"></path>
+          </svg>
+          Añadir Sub Role
+        </button>
+      </form>
+
+    </div>
+  </div>
+</div>

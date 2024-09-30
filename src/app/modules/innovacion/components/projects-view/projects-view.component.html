@@ -1,0 +1,65 @@
+<div class="flex flex-col w-full h-full">
+  <h1 class="text-5xl font-bold mt-5 ml-10">Proyectos</h1>
+
+  <div class="mx-auto my-6 flex flex-col md:flex-row justify-around items-center gap-3 w-full">
+    <div class="relative w-full sm:w-4/6">
+      <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+        </svg>
+      </div>
+      <input type="search" id="search"  (input)="filtroProyectos()" [(ngModel)]="filtro" name="filtro"
+        class="block w-full p-4 pl-10 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        placeholder="Buscar Proyecto" required />
+    </div>
+    <div class="flex gap-3">
+      <button (click)="filtrarProyectos(-1)" class="py-3 px-5 rounded-lg hover:cursor-pointer"
+        [ngClass]="{'bg-slate-400 text-black': estadoFiltro == -1}">Todos</button>
+      <button (click)="filtrarProyectos(100)" class="py-3 px-5 rounded-lg hover:cursor-pointer"
+        [ngClass]="{'bg-slate-400 text-black': estadoFiltro == 100}">Completados</button>
+    </div>
+  </div>
+
+
+  <app-spinner class="mt-8" *ngIf="spinner"></app-spinner>
+
+  <div class="mt-8" *ngIf="!spinner">
+    <div *ngFor="let proyecto of proyectosSelected">
+      <div *ngIf="getProgress(proyecto.Tareas) >= estadoFiltro"
+        class="flex flex-row bg-white shadow-md rounded-lg overflow-hidden my-4 md:mx-10 transition-shadow hover:shadow-lg">
+        <div class="w-3" [style.background-color]="proyecto.Color" [style.opacity]="0.7"></div>
+        <div class="px-4 py-2 md:px-10 flex flex-col justify-between w-full">
+          <div>
+            <h2 class="font-bold text-xl mb-4 md:mb-2">{{proyecto.Nombre}}</h2>
+            <p class="text-gray-700 text-base mb-4 hidden md:block">{{proyecto.Descripcion}}</p>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+            <div class="bg-gradient-to-r from-blue-800 to-blue-400 h-2.5 rounded-full"
+              [style.width]="getProgress(proyecto.Tareas) + '%'"></div>
+          </div>
+          <div class="w-full flex flex-row justify-between mt-5 mb-2 ">
+            <div class="bg-blue-800 rounded-full w-8 h-8 flex items-center justify-center hover:cursor-pointer relative"
+              (mouseenter)="showTooltip(proyecto.ProyectoID)" (mouseleave)="hideTooltip()">
+              <i class="fa-solid fa-user text-white"></i>
+              <!-- Usa la comparación con tooltipProjectId para determinar si se muestra -->
+              <div *ngIf="tooltipProjectId === proyecto.ProyectoID"
+                class="absolute z-10 w-56 bg-black text-white p-2 rounded-md shadow-md left-0 -mt-20">
+                <p class="font-bold">Usuarios:</p>
+                <ul>
+                  <li *ngFor="let usuario of proyecto.Usuarios">{{ usuario.Nombre }}</li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <span class="text-gray-800">Estado: </span>
+              <span class="bg-gray-800 text-white p-2 rounded-lg">{{ getState(proyecto.Tareas) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

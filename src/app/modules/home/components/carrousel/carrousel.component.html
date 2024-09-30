@@ -1,0 +1,28 @@
+<div class="text-center mb-12 mt-4"  *ngIf="!spinner">
+  <h2 class="text-3xl lg:text-4xl font-bold">Ultimas Noticias</h2>
+</div>
+
+<!-- Swiper -->
+<div class="swiper mySwiper">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide  flex flex-col" *ngFor="let slide of slides">
+      <div class="bg-white relative rounded-lg shadow-lg overflow-hidden flex flex-col flex-grow">
+        <img class="w-full object-cover flex-shrink-0" style="min-height: 200px; max-height: 200px;"
+          [src]="slide.UrlImg" alt="Carga Liquida Colombia">
+        <div class="p-6 text-left flex flex-col flex-grow">
+          <h5 class="text-xl font-semibold mb-2">{{slide.Titulo}}</h5>
+          <div class="mt-auto text-right">
+            <button class="text-sm text-gray-700 mb-4">{{ slide.Autor }}</button>
+          </div>
+        </div>
+
+        <!-- Para la descripción -->
+        <div class="absolute Descripcion top-0 left-0 w-full h-full shadow-lg flex bg-white text-center items-center p-5 overflow-auto">
+          <p>{{ slide.Descripcion }}</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="swiper-pagination"></div>
+</div>

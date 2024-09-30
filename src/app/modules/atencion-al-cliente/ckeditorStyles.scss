@@ -1,0 +1,153 @@
+/* Estilos básicos del contenido del blog */
+.ck-content {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333333;
+}
+
+/* Títulos */
+.ck-content h1,
+.ck-content h2,
+.ck-content h3,
+.ck-content h4,
+.ck-content h5,
+.ck-content h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.ck-content h2 {
+  font-size: 2.25rem; /* ej. para títulos grandes */
+}
+
+.ck-content h3 {
+  font-size: 1.75rem; /* ej. para subtítulos */
+}
+
+.ck-content h4 {
+  font-size: 1.5rem; /* ej. para subtítulos */
+}
+
+/* Párrafos */
+.ck-content p {
+  margin-bottom: 1rem;
+}
+
+/* Enlaces */
+.ck-content a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.ck-content a:hover {
+  text-decoration: underline;
+}
+
+/* Imágenes */
+.ck-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Citas Modernas */
+.ck-content blockquote {
+  margin: 2rem 0;
+  padding: 1rem 1rem 1rem 2rem; /* Aumenta el relleno para un aspecto más espacioso */
+  border-left: 4px solid #4a5568; /* Borde izquierdo más grueso y en un color más moderno */
+  background-color: #f7fafc; /* Fondo sutil para destacar la cita */
+  color: #2d3748; /* Color de texto más oscuro para mejor contraste */
+  font-style: normal; /* Considera eliminar el estilo itálico para un aspecto más limpio */
+  font-size: 1.1rem; /* Ligeramente más grande para destacar */
+  line-height: 1.6; /* Mejora la legibilidad */
+  position: relative;
+}
+
+.ck-content blockquote::before {
+  content: "“"; /* Carácter de cita decorativo */
+  position: absolute;
+  left: 10px;
+  top: -10px;
+  font-size: 3rem; /* Tamaño grande para un elemento decorativo prominente */
+  color: #cbd5e0; /* Color sutil que combina con el esquema */
+  font-family: Georgia, "Times New Roman", Times, serif; /* Fuente con serifa para un toque clásico */
+}
+
+.ck-content blockquote::after {
+  content: "”";
+  position: absolute;
+  right: 10px;
+  bottom: -10px;
+  font-size: 3rem;
+  color: #cbd5e0;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+
+/* Listas */
+.ck-content ul {
+  margin-left: 3rem;
+  list-style-type: disc;
+}
+
+.ck-content ul ul {
+  list-style-type: circle;
+}
+
+.ck-content ul ul ul {
+  list-style-type: square;
+}
+
+/* Estilos base para listas ordenadas en .ck-content */
+.ck-content ol {
+  margin-left: 3rem; /* Espaciado uniforme para todas las listas ordenadas */
+}
+
+/* Estilos específicos para listas anidadas, utilizando la notación de hijos directos (>) */
+.ck-content ol > li > ol {
+  list-style-type: lower-latin; /* 1er nivel de anidación */
+}
+
+.ck-content ol > li > ol > li > ol {
+  list-style-type: lower-roman; /* 2do nivel de anidación */
+}
+
+.ck-content ol > li > ol > li > ol > li > ol {
+  list-style-type: upper-latin; /* 3er nivel de anidación */
+}
+
+.ck-content ol > li > ol > li > ol > li > ol > li > ol {
+  list-style-type: upper-roman; /* 4to nivel de anidación */
+}
+
+
+/* Tablas */
+.ck-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.ck-content th,
+.ck-content td {
+  padding: 0.75rem;
+  border: 1px solid #ddd; /* Color de borde ligero para una apariencia limpia */
+}
+
+.ck-content th {
+  background-color: #f8f9fa; /* Fondo ligeramente gris para los encabezados */
+  font-weight: bold;
+}
+
+.ck-content tr:nth-child(even) {
+  background-color: #f2f2f2; /* Fondo alternado para las filas para mejorar la legibilidad */
+}
+
+.ck-content caption {
+  padding: 0.75rem;
+  font-size: 1.25rem; /* Tamaño más grande para el título de la tabla */
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 0.5rem;
+}

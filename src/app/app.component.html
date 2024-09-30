@@ -1,0 +1,5 @@
+<app-sidebar *ngIf="isLoggedIn$ | async"></app-sidebar>
+<div *ngIf="isLoggedIn$ | async" class="w-full h-full min-h-screen bg-slate-200 p-4 pt-24 sm:pl-76">
+  <router-outlet></router-outlet>
+</div>
+<router-outlet *ngIf="!(isLoggedIn$ | async)"></router-outlet>

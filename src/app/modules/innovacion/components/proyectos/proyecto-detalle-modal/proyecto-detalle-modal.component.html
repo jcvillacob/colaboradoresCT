@@ -1,0 +1,405 @@
+<div class="w-full flex justify-center items-center">
+  <div class="relative mb-5 p-5 mx-3 border w-full shadow-lg rounded-lg bg-white">
+    <!-- Botón para ir atrás -->
+    <button (click)="goBack()"
+      class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"
+        stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+      </svg>
+    </button>
+
+    <!-- Editar y Eliminar -->
+    <div class="absolute top-0 right-5 mt-5">
+      <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal"
+        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        type="button">
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+          viewBox="0 0 16 3">
+          <path
+            d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+        </svg>
+      </button>
+
+      <!-- Dropdown menu -->
+      <div id="dropdownDotsHorizontal"
+        class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
+          <li>
+            <a id="updateProductButton" data-modal-target="updateProductModal" data-modal-toggle="updateProductModal"
+              class="block px-4 py-2 hover:bg-gray-100 hover:cursor-pointer">Editar</a>
+          </li>
+          <li>
+            <a data-modal-target="popup-modal" data-modal-toggle="popup-modal"
+              class="block px-4 py-2 hover:bg-gray-100 hover:cursor-pointer">Eliminar</a>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+    <app-spinner *ngIf="spinner"></app-spinner>
+
+    <!-- -------------------------------------- -->
+    <div class="text-left md:pl-10" *ngIf="!spinner">
+      <!-- Título del proyecto con icono de Font Awesome -->
+      <div class="flex items-center mb-2">
+        <i class="text-3xl mr-4" [ngClass]="proyecto.Icono" [ngStyle]="{'color': proyecto.Color}"></i>
+        <h3 class="text-2xl font-semibold text-gray-900">{{ proyecto.Nombre }}</h3>
+      </div>
+      <!-- Descripción del proyecto -->
+      <p class="text-sm text-gray-500 mb-4">{{ proyecto.Descripcion }}</p>
+
+      <!-- Estado del proyecto con indicador de color -->
+      <div class="flex items-center mb-4">
+        <i class="fas fa-tasks fa-sm text-gray-500 mr-4"></i>
+        <div class="flex items-center">
+          <span class="text-gray-700 font-medium mr-2">Estado:</span>
+          <span class="py-1 px-3 text-sm text-gray-700 bg-gray-200 rounded-full">{{ getState() }}</span>
+        </div>
+      </div>
+
+      <!-- Creador del proyecto -->
+      <div class="flex items-center mb-4">
+        <i class="fas fa-user fa-sm text-gray-500 mr-4"></i>
+        <div>
+          <span class="text-gray-700 font-medium mr-2">Creador:</span>
+          <span class="text-sm text-gray-500">{{ proyecto.Creador }}</span>
+        </div>
+      </div>
+
+      <!-- Personas involucradas en el proyecto -->
+      <div class="flex items-center mb-4">
+        <i class="fas fa-users fa-sm text-gray-500 mr-4"></i>
+        <div class="">
+          <p class="text-gray-700 font-medium mr-2">Participantes:</p>
+          <ul class="list-disc pl-5 mt-2">
+            <li *ngFor="let usuario of proyecto.Usuarios" class="text-sm text-gray-700">{{ usuario.Nombre }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Progreso del proyecto -->
+      <div class="flex items-center mb-4">
+        <i class="fas fa-chart-line fa-sm text-gray-500 mr-4"></i>
+        <div class="flex-1">
+          <span class="text-gray-700 font-medium mr-2">Avance:</span>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+            <div class="bg-blue-600 h-2.5 rounded-full" [ngStyle]="{'width': avanceProyecto + '%'}"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fechas importantes del proyecto -->
+      <div class="flex items-center mb-4">
+        <i class="fas fa-calendar-alt fa-sm text-gray-500 mr-4"></i>
+        <div>
+          <span class="text-gray-700 font-medium mr-2">Fecha:</span>
+          <span class="text-sm text-gray-500">No hay fechas aún</span>
+        </div>
+      </div>
+    </div>
+    <!-- -------------------------------------- -->
+
+
+    <div class="mt-5" *ngIf="!spinner">
+      <h4 class="text-lg font-semibold text-gray-900">Tareas del Proyecto</h4>
+      <!-- Inicio de la tabla -->
+      <div class="mt-3 overflow-auto border rounded-lg">
+        <!-- Encabezado de la tabla -->
+        <table class="w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarea</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Personas</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+            </tr>
+          </thead>
+          <!-- Lista de tareas -->
+          <tbody class="bg-white divide-y divide-gray-200">
+            <ng-container *ngFor="let tarea of tareas">
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div>
+                      <div [routerLink]="['../../../tareas/detalles', tarea.TareaID]" class="text-sm font-medium text-gray-900 hover:cursor-pointer">{{ tarea.Titulo }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900" *ngFor="let UserTarea of tarea.Usuarios">{{ UserTarea.Nombre }}
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-sm">{{ tarea.FechaLimite | date: 'd \'de\' MMMM': 'UTC' }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-sm text-gray-900">{{ tarea.Estado }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <i class="fa-solid fa-trash hover:cursor-pointer hover:text-red-500"
+                    (click)="eliminarTarea(tarea.TareaID)"></i>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <!-- Botón para agregar nuevas tareas -->
+        <div class="flex items-center justify-between px-6 py-3 bg-white">
+          <button class="flex items-center text-blue-600 hover:text-blue-800" (click)="addTarea()">
+            <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Nueva
+          </button>
+        </div>
+      </div>
+
+      <!-- Formulario para añadir tareas -->
+      <div class="mt-5 transition-all" [ngClass]="{'hidden': !tareaAdd}">
+        <h4 class="font-semibold mb-2">Añadir nueva tarea:</h4>
+        <input type="text" placeholder="Título de la tarea" class="px-3 py-2 border rounded-lg w-full mb-2"
+          [(ngModel)]="tituloTarea" />
+        <textarea placeholder="Descripción de la tarea" class="px-3 py-2 border rounded-lg w-full mb-2"
+          [(ngModel)]="descripcionTarea"></textarea>
+
+
+        <!-- Datepicker Input with Tailwind CSS styles -->
+        <input type="date" [(ngModel)]="dateTarea" class="px-3 py-2 border rounded-lg w-full mb-2 appearance-none">
+
+
+        <!-- Para los Usuarios de las Tareas -->
+        <div class="flex items-center justify-center p-4">
+          <button id="usuariosTareasDropButton" data-dropdown-toggle="usuariosTareasDrop"
+            class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+            type="button">
+            Asignar Usuarios
+            <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 4 4 4-4" />
+            </svg>
+          </button>
+
+          <!-- Dropdown menu -->
+          <div id="usuariosTareasDrop" class="z-10 hidden w-56 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+            <ul class="space-y-2 text-sm" aria-labelledby="usuariosTareasDrop">
+              <li *ngFor="let usuario of proyecto.Usuarios">
+                <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                  <input id="checkbox-item-{{usuario.UsuarioID}}" type="checkbox" [(ngModel)]="usuario.tarea"
+                    name="seleccionado"
+                    class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                  <label for="checkbox-item-{{usuario.UsuarioID}}"
+                    class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{
+                    usuario.Nombre
+                    }}</label>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <ul class="flex gap-1 w-full m-5">
+          <ng-container *ngFor="let usuario of proyecto.Usuarios">
+            <li
+              class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300"
+              *ngIf="usuario.tarea">
+              {{ usuario.Nombre }}
+            </li>
+          </ng-container>
+        </ul>
+
+
+        <button (click)="crearTarea()"
+          class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Añadir
+          Tarea</button>
+      </div>
+    </div>
+
+    <div id="popup-modal" tabindex="-1"
+      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+      <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <button type="button"
+            class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            data-modal-hide="popup-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+            <span class="sr-only">Cerrar modal</span>
+          </button>
+          <div class="p-4 md:p-5 text-center">
+            <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">¿Estas seguro que quieres eliminar
+              este
+              proyecto?</h3>
+            <button (click)="eliminarProyecto()" data-modal-hide="popup-modal" type="button"
+              class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+              Si, Estoy Seguro
+            </button>
+            <button data-modal-hide="popup-modal" type="button"
+              class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
+              cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal Editar Proyecto -->
+<div id="updateProductModal" tabindex="-1" aria-hidden="true"
+  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+  <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+    <!-- Modal content -->
+    <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+      <!-- Modal body -->
+      <button type="button"
+        class="absolute top-3 right-3 z-50 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+        data-modal-toggle="updateProductModal">
+        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"></path>
+        </svg>
+      </button>
+      <form class="relative mb-5 mx-auto p-5 w-full max-w-2xl" (ngSubmit)="updateProyecto()" #proyectoForm="ngForm">
+        <div class="text-center">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+            <!-- Icono del modal -->
+            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 class="text-lg leading-6 font-medium text-gray-900">Actualizar Proyecto</h3>
+          <div class="mt-2 px-4 py-3 flex flex-col items-start">
+
+            <!-- Selector de Color Mejorado -->
+            <div class="mt-4 py-3">
+              <div class="flex items-center">
+                <input type="color" id="colorPicker" name="color"
+                  class="w-10 h-10 p-0 border-none rounded-full cursor-pointer shadow-sm" title="Elige tu color"
+                  [(ngModel)]="nuevoProyecto.color">
+                <div class="ml-3 text-sm text-gray-600 dark:text-gray-400">
+                  <span>Color seleccionado: </span>
+                  <span class="font-semibold" [style.color]="nuevoProyecto.color"> {{ nuevoProyecto.color }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selector de Iconos con FontAwesome -->
+            <div class="flex gap-10 items-center mb-5">
+              <button id="iconDropdownButton" data-dropdown-toggle="iconDropdown" type="button"
+                class="text-gray-700 border border-gray-300 rounded-md shadow-sm px-4 py-2 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500">
+                Icono
+              </button>
+
+              <i [ngClass]="this.nuevoProyecto.icono"></i>
+            </div>
+
+            <!-- Dropdown de Iconos -->
+            <div id="iconDropdown"
+              class="hidden z-10 w-64 max-h-52 overflow-auto bg-white rounded-lg divide-y divide-gray-100 shadow dark:bg-gray-700">
+              <div class="grid grid-cols-4 gap-4 p-4">
+                <!-- Itera sobre los iconos aquí -->
+                <button type="button" *ngFor="let icon of icons"
+                  class="flex justify-center items-center w-full h-12 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                  (click)="guardarIcono(icon.class)">
+                  <i [class]="icon.class"></i>
+                </button>
+              </div>
+            </div>
+
+            <input type="text" placeholder="Nombre del proyecto"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required [(ngModel)]="nuevoProyecto.nombre"
+              name="nombre">
+            <textarea placeholder="Descripción del proyecto"
+              class="mt-1 block w-full min-h-36 border-gray-300 rounded-md shadow-sm" required
+              [(ngModel)]="nuevoProyecto.descripcion" name="descripcion"></textarea>
+          </div>
+
+          <!-- USUARIOS -->
+          <div class="flex items-center justify-center p-4">
+            <button id="dropdownDefault" data-dropdown-toggle="dropdown"
+              class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+              type="button">
+              Seleccionar Usuarios
+              <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m1 1 4 4 4-4" />
+              </svg>
+            </button>
+
+            <!-- Dropdown menu -->
+            <div id="dropdown" class="z-10 hidden w-56 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+              <div class="p-3">
+                <label for="input-group-search" class="sr-only">Buscar</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                  </div>
+                  <input type="text" id="input-group-search" (input)="filtroUsuario()" [(ngModel)]="filtro"
+                    name="filtro"
+                    class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+                    placeholder="Usuario">
+                </div>
+              </div>
+              <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
+                <li *ngFor="let user of usuariosFiltrados">
+                  <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                    <input [id]="user.Nombre" type="checkbox" [(ngModel)]="user.seleccionado" [name]="user.Nombre"
+                      class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                    <label [for]="user.Nombre"
+                      class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{
+                      user.Nombre
+                      }}</label>
+                  </div>
+                </li>
+              </ul>
+              <button (click)="borrarFilto()" type="button"
+                class="flex items-center w-full p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
+                <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                  viewBox="0 0 20 18">
+                  <path
+                    d="M6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Zm11-3h-6a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2Z" />
+                </svg>
+                Borrar Usuarios
+              </button>
+            </div>
+          </div>
+
+          <ul class="flex gap-1 w-full m-5">
+            <li
+              class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+              *ngFor="let usuario of usuariosSeleccionados">
+              {{ usuario.Nombre }}
+            </li>
+          </ul>
+
+
+          <!-- ****************************************** -->
+          <div class="items-center px-4 py-3">
+            <button type="submit" data-modal-toggle="updateProductModal"
+              class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">
+              Actualizar Proyecto
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,216 @@
+<div class="relative w-full">
+  <div class="my-8 text-center">
+    <button id="crearProyectoModalButton" data-modal-target="crearProyectoModal" data-modal-toggle="crearProyectoModal"
+      class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+      type="button">
+      Crear Proyecto
+    </button>
+  </div>
+
+  <app-spinner *ngIf="spinner"></app-spinner>
+
+  <div class="w-full flex justify-between items-center px-10 my-8" *ngIf="!spinner">
+    <h1 class="text-3xl font-semibold text-black">Proyectos</h1>
+    <div class="flex gap-2">
+      <div class="archivados text-black text-2xl bg-white shadow-md cursor-pointer hover:bg-black hover:text-white p-3 flex justify-center items-center rounded-full"> <i class="fa-solid fa-file-signature"></i> </div>
+      <div class="archivados text-black text-2xl bg-white shadow-md cursor-pointer hover:bg-black hover:text-white p-3 flex justify-center items-center rounded-full"> <i class="fa-solid fa-box-archive"></i> </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="proyectos.length > 0; else noProyectosTemplate" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"  *ngIf="!spinner">
+      <div *ngFor="let proyecto of proyectos"
+        class="proyecto relative p-4 shadow-md rounded-lg bg-white hover:cursor-pointer"
+        [ngStyle]="{'background-color': convertHexToRGBA(proyecto.Color, 0.2)}">
+        <div [routerLink]="['./detalles', proyecto.ProyectoID]" class="">
+          <div class="flex gap-4 items-center">
+            <i [ngClass]="proyecto.Icono" class="text-2xl text-shadow"></i>
+            <h2 class="text-xl font-semibold mb-2 text-shadow">{{ proyecto.Nombre }}</h2>
+          </div>
+          <!-- Usuarios -->
+          <div class="mt-8">
+            <span class="text-md text-gray-500 text-shadow">Participantes:</span>
+            <br>
+            <p *ngFor="let user of proyecto.Usuarios" class="text-sm ml-2 text-gray-500 text-shadow">{{ user.Nombre }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noProyectosTemplate>
+    <div class="max-w-md mx-auto mt-10"  *ngIf="!spinner">
+      <div class="p-6 shadow-md rounded-lg bg-white text-center">
+        <h2 class="text-xl font-semibold mb-2">No hay proyectos</h2>
+        <p class="text-gray-600 mb-4">Parece que aún no has creado ningún proyecto. ¡Empieza uno nuevo ahora!</p>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+
+<!-- Modal para Crear Proyecto -->
+<div id="crearProyectoModal" tabindex="-1" aria-hidden="true"
+  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+  <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+    <!-- Modal content -->
+    <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+      <!-- Modal header -->
+      <div class="flex gap-2 justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+          <!-- Icono del modal -->
+          <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Crear nuevo proyecto
+        </h3>
+        <button type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          data-modal-toggle="crearProyectoModal">
+          <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"></path>
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
+      </div>
+      <!-- Modal body -->
+      <form class="relative mb-5 mx-auto p-5 w-full max-w-2xl rounded-lg bg-white" (ngSubmit)="crearProyecto()"
+        #proyectoForm="ngForm">
+
+        <div class="text-center">
+
+          <div class="mt-2 px-4 py-3 flex flex-col items-start">
+
+            <!-- Selector de Color Mejorado -->
+            <div class="mt-4 py-3">
+              <div class="flex items-center">
+                <input type="color" id="colorPicker" name="color"
+                  class="w-10 h-10 p-0 border-none rounded-full cursor-pointer shadow-sm" title="Elige tu color"
+                  [(ngModel)]="nuevoProyecto.color">
+                <div class="ml-3 text-sm text-gray-600 dark:text-gray-400">
+                  <span>Color seleccionado: </span>
+                  <span class="font-semibold" [style.color]="nuevoProyecto.color"> {{ nuevoProyecto.color }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selector de Iconos con FontAwesome -->
+            <div class="flex gap-10 items-center mb-5">
+              <button id="iconDropdownButton" data-dropdown-toggle="iconDropdown" type="button"
+                class="text-gray-700 border border-gray-300 rounded-md shadow-sm px-4 py-2 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500">
+                Icono
+              </button>
+
+              <i [ngClass]="this.nuevoProyecto.icono"></i>
+            </div>
+
+            <!-- Dropdown de Iconos -->
+            <div id="iconDropdown"
+              class="hidden z-10 w-64 max-h-52 overflow-auto bg-white rounded-lg divide-y divide-gray-100 shadow dark:bg-gray-700">
+              <div class="grid grid-cols-4 gap-4 p-4">
+                <!-- Itera sobre los iconos aquí -->
+                <button type="button" *ngFor="let icon of icons"
+                  class="flex justify-center items-center w-full h-12 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                  (click)="guardarIcono(icon.class)">
+                  <i [class]="icon.class"></i>
+                </button>
+              </div>
+            </div>
+
+            <input type="text" placeholder="Nombre del proyecto"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required [(ngModel)]="nuevoProyecto.nombre"
+              name="nombre">
+            <textarea placeholder="Descripción del proyecto"
+              class="mt-1 block w-full min-h-36 border-gray-300 rounded-md shadow-sm" required
+              [(ngModel)]="nuevoProyecto.descripcion" name="descripcion"></textarea>
+          </div>
+          <!-- ***************************************** -->
+
+
+
+          <!-- USUARIOS -->
+
+          <button id="dropdownSearchButton" data-dropdown-toggle="dropdownSearch" data-dropdown-placement="bottom"
+            class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+            type="button">Seleccionar Usuarios<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 4 4 4-4" />
+            </svg>
+          </button>
+
+          <!-- Dropdown menu usuarios -->
+          <div id="dropdownSearch" class="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
+            <div class="p-3">
+              <label for="input-group-search" class="sr-only">Buscar</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                  <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                  </svg>
+                </div>
+                <input type="text" id="input-group-search" (input)="filtroUsuario()" [(ngModel)]="filtro" name="filtro"
+                  class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+                  placeholder="Usuario">
+              </div>
+            </div>
+            <ul class="px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdownSearchButton">
+
+              <li *ngFor="let usuario of usuariosFiltrados">
+                <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                  <input id="checkbox-item-{{usuario.UsuarioID}}" type="checkbox" [(ngModel)]="usuario.seleccionado"
+                    name="seleccionado"
+                    class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                  <label for="checkbox-item-{{usuario.UsuarioID}}"
+                    class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{
+                    usuario.Nombre
+                    }}</label>
+                </div>
+              </li>
+
+
+            </ul>
+            <button (click)="borrarFilto()" type="button"
+              class="flex items-center w-full p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
+              <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                viewBox="0 0 20 18">
+                <path
+                  d="M6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Zm11-3h-6a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2Z" />
+              </svg>
+              Borrar Usuarios
+            </button>
+          </div>
+
+          <ul class="flex gap-1 w-full m-5">
+            <li
+              class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+              *ngFor="let usuario of usuariosSeleccionados">
+              {{ usuario.Nombre }}
+            </li>
+          </ul>
+
+
+          <!-- ****************************************** -->
+          <div class="items-center px-4 py-3">
+            <button type="submit" data-modal-toggle="crearProyectoModal"
+              class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">
+              Crear
+            </button>
+          </div>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+</div>

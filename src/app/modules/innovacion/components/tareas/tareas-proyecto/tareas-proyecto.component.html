@@ -1,0 +1,67 @@
+<app-spinner *ngIf="spinner"></app-spinner>
+
+<div *ngIf="!spinner">
+  <div *ngIf="proyectos && proyectos.length > 0">
+    <div *ngFor="let project of proyectos" class="p-4 mb-3 rounded-md" [ngStyle]="{'background-color': convertHexToRGBA(project.Color, 0.1)}">
+      <div class="flex gap-4 items-center mb-4">
+        <i [ngClass]="project.Icono" class="text-2xl text-shadow"></i>
+        <h2 class="text-xl font-semibold mb-2 text-shadow">{{ project.Nombre }}</h2>
+      </div>
+      <div class="kanban-board flex gap-5 mb-10">
+        <!-- Columna: Por Hacer -->
+        <div cdkDropList #porHacerList="cdkDropList" [cdkDropListData]="project.porHacer"
+             [cdkDropListConnectedTo]="[enProgresoList, completadoList]"
+             class="kanban-column flex-1 p-4"
+             (cdkDropListDropped)="onDrop($event, project, 'planeacion')">
+          <div class="flex items-center p-2 my-2 rounded-lg bg-gray-800 text-white">
+            <span class="font-semibold">En Planeación</span>
+          </div>
+          <div *ngFor="let tarea of project.porHacer" cdkDrag [routerLink]="['./detalles', tarea.TareaID]"
+               class="tarea p-3 mb-2 border border-gray-200 rounded-md bg-white cursor-pointer">
+            {{ tarea.Titulo }}
+            <!-- Usuarios -->
+            <div class="">
+              <p *ngFor="let user of tarea.Usuarios" class="text-sm ml-2 text-gray-500 text-shadow text-right">{{ user.Nombre }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna: En Progreso -->
+        <div cdkDropList #enProgresoList="cdkDropList" [cdkDropListData]="project.enProgreso"
+             [cdkDropListConnectedTo]="[porHacerList, completadoList]"
+             class="kanban-column flex-1 p-4 "
+             (cdkDropListDropped)="onDrop($event, project, 'enProgreso')">
+          <div class="flex items-center p-2 my-2 rounded-lg bg-yellow-600 text-white">
+            <span class="font-semibold">En Progreso</span>
+          </div>
+          <div *ngFor="let tarea of project.enProgreso" cdkDrag [routerLink]="['./detalles', tarea.TareaID]"
+               class="tarea p-3 mb-2 border border-gray-200 rounded-md bg-white cursor-pointer">
+            {{ tarea.Titulo }}
+            <!-- Usuarios -->
+            <div class="">
+              <p *ngFor="let user of tarea.Usuarios" class="text-sm ml-2 text-gray-500 text-shadow text-right">{{ user.Nombre }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna: Completado -->
+        <div cdkDropList #completadoList="cdkDropList" [cdkDropListData]="project.completado"
+             [cdkDropListConnectedTo]="[porHacerList, enProgresoList]"
+             class="kanban-column flex-1 p-4"
+             (cdkDropListDropped)="onDrop($event, project, 'completado')">
+          <div class="flex items-center p-2 my-2 rounded-lg bg-green-600 text-white">
+            <span class="font-semibold">Terminadas</span>
+          </div>
+          <div *ngFor="let tarea of project.completado" cdkDrag [routerLink]="['./detalles', tarea.TareaID]"
+               class="tarea p-3 mb-2 border border-gray-200 rounded-md bg-white cursor-pointer">
+            {{ tarea.Titulo }}
+            <!-- Usuarios -->
+            <div class="">
+              <p *ngFor="let user of tarea.Usuarios" class="text-sm ml-2 text-gray-500 text-shadow text-right">{{ user.Nombre }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

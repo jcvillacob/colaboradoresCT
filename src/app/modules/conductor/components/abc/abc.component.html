@@ -1,0 +1,28 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Section title -->
+  <div class="text-center pb-6 mb-4">
+    <h2 class="text-4xl font-bold text-gray-800">Capacitaciones</h2>
+    <p class="text-gray-600">Explora nuestras capacitaciones disponibles</p>
+  </div>
+
+  <app-spinner *ngIf="spinner"></app-spinner>
+
+  <!-- Grid layout for cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" *ngIf="!spinner">
+    <!-- ngFor directive to loop through the capacitaciones array -->
+    <div *ngFor="let capacitacion of capacitaciones" [routerLink]="['./video', capacitacion.capacitacionID]"
+      class="bg-white overflow-hidden rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
+      <!-- Card image -->
+      <img [src]="capacitacion.UrlImg" alt="{{ capacitacion.Titulo }}" class="w-full h-48 object-cover">
+      <!-- Card body -->
+      <div class="p-6">
+        <h3 class="font-semibold text-xl leading-tight truncate">{{ capacitacion.Titulo }}</h3>
+        <p class="text-gray-600 mt-2">{{ capacitacion.Descripcion | slice:0:100 }}...</p>
+        <div class="mt-4">
+          <a href="{{ capacitacion.Test }}" class="text-blue-600 hover:text-blue-700 font-semibold text-sm">Realizar
+            Test</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
