@@ -51,35 +51,20 @@ export class AuthService {
     return exp > now;
   }
 
-/*   private loadUserRolesAndSubroles(usuarioID: number) {
-    this.getUsuarioRol(usuarioID).subscribe(data => {
-      this.usuarioLogged['roles'] = data;
-      if (usuarioID === 0) {
-        this.usuarioLogged['roles'] = [{ NombreRol: 'Conductor' }];
-      }
-      this.getUsuarioSubrol(usuarioID).subscribe(data => {
-        this.usuarioLogged['subroles'] = data;
-      });
-    });
-  } */
-
-  login(username: string, password: string) {
-    return this.http.post<any>(`${this.apiUrl}/login`, { username, password }).pipe(
-      switchMap(response => {
-        if (response && response.token) {
-          localStorage.setItem('currentUser', JSON.stringify(response));
-          this.usuarioLogged = this.decodeToken(response.token);
-          this.isLoggedIn.next(true);
-          this.router.navigate(['/']);
-          return this.usuarioLogged;
-        } else {
-          return of(null);
+  /*   private loadUserRolesAndSubroles(usuarioID: number) {
+      this.getUsuarioRol(usuarioID).subscribe(data => {
+        this.usuarioLogged['roles'] = data;
+        if (usuarioID === 0) {
+          this.usuarioLogged['roles'] = [{ NombreRol: 'Conductor' }];
         }
-      }),
-      catchError(error => {
-        return throwError(error);
-      })
-    );
+        this.getUsuarioSubrol(usuarioID).subscribe(data => {
+          this.usuarioLogged['subroles'] = data;
+        });
+      });
+    } */
+
+  login(username: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, { username, password });
   }
 
   logout() {
