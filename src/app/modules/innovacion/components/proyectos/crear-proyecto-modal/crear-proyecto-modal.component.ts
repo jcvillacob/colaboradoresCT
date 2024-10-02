@@ -2,6 +2,9 @@ import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@ang
 import { ProyectosService } from '../../../services/proyectos.service';
 import { initFlowbite } from 'flowbite';
 import { AuthService } from 'src/app/core/authentication/auth.service';
+import { Observable } from 'rxjs';
+import { AuthState } from 'src/app/core/authentication/store/auth.reducer';
+import { Store } from '@ngrx/store';
 
 interface Usuario {
   UsuarioID: number;
@@ -21,14 +24,19 @@ export class CrearProyectoModalComponent implements OnInit {
   filtro = '';
   usuarios: Usuario[] = [];
   usuariosFiltrados: Usuario[] = this.usuarios;
-  creador!: number;
+  creador!: any;
+  userLogged$!: Observable<any>;
 
-  constructor(private proyectosService: ProyectosService, private authService: AuthService, private cdr: ChangeDetectorRef) {
+
+  constructor(private proyectosService: ProyectosService, private authService: AuthService, private cdr: ChangeDetectorRef, private store: Store<{ auth: AuthState }>) {
+    this.userLogged$ = this.store.select(state => state.auth.user);
     this.proyectosService.getUsuarios().subscribe(data => {
       this.usuarios = data.filter(u => u.UsuarioID != this.creador);
       this.usuariosFiltrados = this.usuarios;
       this.icons = this.proyectosService.icons;
-      this.creador = this.authService.getUsuarioID();
+      this.creador = this.userLogged$.subscribe(user => {
+        return user.UsuarioID
+      });
     });
   }
 
@@ -56,7 +64,7 @@ export class CrearProyectoModalComponent implements OnInit {
 
     this.proyectosService.crearProyecto(proyectoData).subscribe(respuesta => {
       for (let usuario of userIDs) {
-        this.proyectosService.setProyectoUsuarios(respuesta.proyectoID, usuario).subscribe(data => {this.cerrarCrear();});
+        this.proyectosService.setProyectoUsuarios(respuesta.proyectoID, usuario).subscribe(data => { this.cerrarCrear(); });
         this.cerrarCrear();
       }
     });

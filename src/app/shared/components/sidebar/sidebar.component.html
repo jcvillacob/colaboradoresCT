@@ -26,19 +26,25 @@
               aria-expanded="false" data-dropdown-toggle="dropdown-user">
               <span class="sr-only">Abrir menu de usuarios</span>
               <div class="flex w-8 h-8 justify-center items-center text-lg text-white rounded-full bg-red-700"
-                alt="user photo"> {{ usuarioLogged.Nombre[0] }} </div>
+                alt="user photo">
+                <ng-container *ngIf="usuarioLogged$ | async as usuarioLogged">
+                  {{ usuarioLogged?.Nombre?.[0] }}
+                </ng-container>
+              </div>
             </button>
           </div>
           <div
             class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
             id="dropdown-user">
             <div class="px-4 py-3" role="none">
-              <p class="text-sm text-gray-900 dark:text-white" role="none">
-                {{ usuarioLogged.Nombre }}
-              </p>
-              <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                {{ usuarioLogged.Email }}
-              </p>
+              <ng-container *ngIf="usuarioLogged$ | async as usuarioLogged">
+                <p class="text-sm text-gray-900 dark:text-white" role="none">
+                  {{ usuarioLogged?.Nombre }}
+                </p>
+                <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                  {{ usuarioLogged?.Email }}
+                </p>
+              </ng-container>
             </div>
             <ul class="py-1" role="none">
               <li>

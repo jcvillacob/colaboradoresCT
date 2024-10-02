@@ -2,7 +2,9 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ProyectosService } from '../../../services/proyectos.service';
 import { initFlowbite } from 'flowbite';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/core/authentication/auth.service';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AuthState } from 'src/app/core/authentication/store/auth.reducer';
 
 
 interface Usuario {
@@ -28,18 +30,22 @@ export class ProyectoDetalleModalComponent implements OnInit, AfterViewInit {
   filtro = '';
   usuarios: Usuario[] = [];
   usuariosFiltrados: Usuario[] = this.usuarios;
-  creador!: number;
+  creador!: any;
   tareaAdd = false;
   spinner: boolean = true;
+  userLogged$!: Observable<any>;
 
   constructor(
     private proyectosService: ProyectosService,
-    private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: Store<{ auth: AuthState }>
   ) {
     this.proyectosService.getUsuarios().subscribe((data) => {
-      this.creador = this.authService.getUsuarioID();
+      this.userLogged$ = this.store.select(state => state.auth.user);
+      this.creador = this.userLogged$.subscribe(user => {
+        return user.UsuarioID
+      });
       this.usuarios = data.filter((u) => u.UsuarioID != this.creador);
       this.usuariosFiltrados = this.usuarios;
       this.icons = this.proyectosService.icons;
@@ -76,13 +82,13 @@ export class ProyectoDetalleModalComponent implements OnInit, AfterViewInit {
 
   getState(): string {
     const totalTareas = this.tareas.length;
-    if(totalTareas === 0) {
+    if (totalTareas === 0) {
       return 'En Planeación';
     };
     const tareasCompletadas = this.tareas.filter(tarea => tarea.Estado === 'completado').length;
     const tareasProgreso = this.tareas.filter(tarea => tarea.Estado === 'enProgreso').length;
     let estado;
-    if(tareasCompletadas / totalTareas === 1) {
+    if (tareasCompletadas / totalTareas === 1) {
       estado = 'Completado';
     } else if ((tareasCompletadas + tareasProgreso) / totalTareas > 0) {
       estado = 'En Progreso';
@@ -129,8 +135,8 @@ export class ProyectoDetalleModalComponent implements OnInit, AfterViewInit {
   /* Tareas */
   getTareas() {
     this.proyectosService.getTareasPorProyecto(this.proyecto.ProyectoID).subscribe((data) => {
-        this.tareas = data;
-      });
+      this.tareas = data;
+    });
   }
 
   addTarea() {

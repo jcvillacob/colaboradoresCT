@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -14,6 +14,7 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
 import { LoginComponent } from './core/authentication/login/login.component';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 import { SharedModule } from './shared/shared.module';
+import { AuthInterceptor } from './core/authentication/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,9 @@ import { SharedModule } from './shared/shared.module';
     StoreModule.forRoot({ auth: authReducer }),
     EffectsModule.forRoot([AuthEffects]),
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

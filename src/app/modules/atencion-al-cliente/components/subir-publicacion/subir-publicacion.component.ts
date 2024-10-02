@@ -4,6 +4,9 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import ClassicEditor from '../../ckeditor5-41.3.1-ns87wj6migar/build/ckeditor';
 import { AuthService } from 'src/app/core/authentication/auth.service';
 import { ClienteExternoService } from '../../services/cliente-externo.service';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AuthState } from 'src/app/core/authentication/store/auth.reducer';
 
 @Component({
   selector: 'app-subir-publicacion',
@@ -61,8 +64,11 @@ export class SubirPublicacionComponent implements OnInit {
     }
   };
   imagePreview!: SafeUrl;
+  userLogged$!: Observable<any>;
 
-  constructor(private sanitizer: DomSanitizer, private authService: AuthService, private clienteExternoService: ClienteExternoService) {
+
+  constructor(private sanitizer: DomSanitizer, private clienteExternoService: ClienteExternoService, private store: Store<{ auth: AuthState }>) {
+    this.userLogged$ = this.store.select(state => state.auth.user);
     this.uploadUrl = this.clienteExternoService.getApiUpload();
   }
 
@@ -92,7 +98,9 @@ export class SubirPublicacionComponent implements OnInit {
       alert('Por favor, seleccione un archivo');
       return;
     }
-    const creadorID = this.authService.getUsuarioID();
+    const creadorID: any = this.userLogged$.subscribe( user => {
+      return user.UsuarioID
+    });
     const formData = new FormData();
     formData.append('titulo', this.blogForm.value.title);
     formData.append('autor', this.blogForm.value.autor);

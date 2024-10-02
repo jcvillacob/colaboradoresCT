@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { ConductoresService } from '../../services/conductores.service';
 import { AuthService } from 'src/app/core/authentication/auth.service';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AuthState } from 'src/app/core/authentication/store/auth.reducer';
 
 @Component({
   selector: 'app-subir-archivos',
@@ -11,14 +14,19 @@ import { AuthService } from 'src/app/core/authentication/auth.service';
 })
 export class SubirArchivosComponent implements OnInit {
   formulario!: FormGroup;
-  creadorID!: number;
+  creadorID!: any;
   cargando: boolean = false;
+  userLogged$!: Observable<any>;
+
 
   videoFile: File | null = null;
   imgFile: File | null = null;
 
-  constructor(private fb: FormBuilder, private conductoresService: ConductoresService, private authService: AuthService) {
-    this.creadorID = this.authService.getUsuarioID();
+  constructor(private fb: FormBuilder, private conductoresService: ConductoresService, private store: Store<{ auth: AuthState }>) {
+    this.userLogged$ = this.store.select(state => state.auth.user);
+    this.creadorID = this.userLogged$.subscribe( user => {
+      return user.UsuarioID
+    });
   }
 
   ngOnInit() {

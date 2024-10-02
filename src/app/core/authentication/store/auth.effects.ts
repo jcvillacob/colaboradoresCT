@@ -6,6 +6,7 @@ import { map, mergeMap, catchError, tap } from 'rxjs/operators';
 import { of, forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from "jwt-decode";
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AuthEffects {
@@ -15,54 +16,65 @@ export class AuthEffects {
       ofType(AuthActions.login),
       mergeMap((action) =>
         this.authService.login(action.username, action.password).pipe(
-          mergeMap((response: any) => {
-            console.log('effect');
+          map((response: any) => {
             if (response && response.token) {
               localStorage.setItem('currentUser', JSON.stringify(response));
               const user = this.decodeToken(response.token);
-              // Obtener roles y subroles si es necesario
-              return forkJoin({
-                roles: "",
-                subroles: "",
-              }).pipe(
-                map(({ roles, subroles }) => {
-                  user.roles = roles;
-                  user.subroles = subroles;
-                  return AuthActions.loginSuccess({ user });
-                })
-              );
+              return AuthActions.loginSuccess({ user });
             } else {
-              return of(AuthActions.loginFailure({ error: 'Credenciales inválidas' }));
+              return AuthActions.loginFailure({ error: 'Credenciales inválidas' });
             }
           }),
-          catchError((error) => of(AuthActions.loginFailure({ error })))
+          catchError((error) => {
+            return of(AuthActions.loginFailure({ error: error.message || 'Error desconocido' }));
+          })
         )
       )
     )
   );
 
+
   // Efecto para manejar el inicio de sesión automático
   autoLogin$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.autoLogin),
-      map(() => {
-        const currentUser = localStorage.getItem('currentUser');
-        if (currentUser) {
-          const userData = JSON.parse(currentUser);
-          const decodedToken = this.decodeToken(userData.token);
-          if (decodedToken && this.isTokenValid(decodedToken.exp)) {
-            // Obtener roles y subroles
-            return AuthActions.loginSuccess({ user: decodedToken });
-          } else {
-            // Token inválido o expirado
-            return AuthActions.logout();
-          }
+      mergeMap(() => {
+        if (environment.skipLogin) {
+          const usuarioLogged = {
+            "UsuarioID": 1,
+            "Username": "jvillacob",
+            "Nombre": "Juan Camilo Villacob",
+            "Cedula": "1100551122",
+            "iat": 1710430791,
+            "exp": 2710448791,
+            "roles": [
+              {
+                "RolID": 23,
+                "NombreRol": "Administrador",
+                "Descripcion": ""
+              }
+            ],
+            "subroles": []
+          };
+          return of(AuthActions.loginSuccess({ user: usuarioLogged }));
         } else {
-          return AuthActions.logout();
+          const currentUser = localStorage.getItem('currentUser');
+          if (currentUser) {
+            const userData = JSON.parse(currentUser);
+            const decodedToken = this.decodeToken(userData.token);
+            if (decodedToken && this.isTokenValid(decodedToken.exp)) {
+              return of(AuthActions.loginSuccess({ user: decodedToken }));
+            } else {
+              return of(AuthActions.logout());
+            }
+          } else {
+            return of(AuthActions.logout());
+          }
         }
       })
     )
   );
+
 
   // Efectos para manejar el éxito y fallo de inicio de sesión
   loginSuccess$ = createEffect(
@@ -70,7 +82,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.loginSuccess),
         tap(() => {
-          this.router.navigate(['/']);
+          this.router.navigate(['home']);
         })
       ),
     { dispatch: false }
@@ -92,7 +104,7 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   private decodeToken(token: string): any {
     try {

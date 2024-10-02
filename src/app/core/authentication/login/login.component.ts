@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../auth.service';
 import { Store } from '@ngrx/store';
 import * as AuthActions from '../store/auth.actions';
 
@@ -16,32 +15,17 @@ export class LoginComponent {
   cargando: boolean = false;
 
 
-  constructor(private authService: AuthService, private store: Store) { }
+  constructor(private store: Store) { }
 
   login() {
     this.cargando = true;
     this.store.dispatch(AuthActions.login({ username: this.username, password: this.password }));
     setTimeout(() => {
       this.cargando = false;
-    }, 5000);
-    /* this.authService.login(this.username, this.password).subscribe({
-      next: (data) => {
-        console.log('Login exitoso', data);
-        this.cargando = false;
-      },
-      error: (error) => {
-        this.showToast = true;
-        this.cargando = false;
-        setTimeout(() => {
-          this.showToast = false;
-        }, 5000);
-      }
-    }); */
+    }, 2000);
   }
 
   closeToast() {
     this.showToast = false;
   }
-
-
 }

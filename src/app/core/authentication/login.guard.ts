@@ -1,16 +1,16 @@
-import { Injectable, inject } from '@angular/core';
-import { CanActivateFn, RouterStateSnapshot, ActivatedRouteSnapshot, UrlTree, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { CanActivateFn, RouterStateSnapshot, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AuthState } from './store/auth.reducer';
 import { map } from 'rxjs/operators';
-import { AuthService } from './auth.service';
 
-export const loginGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
-  const authService = inject(AuthService);
+export const loginGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  const store = inject(Store<{ auth: AuthState }>);
   const router = inject(Router);
 
-  return authService.isLoggedIn$.pipe(
-    map(isLoggedIn => {
-      if (isLoggedIn) {
+  return store.select(state => state.auth.user).pipe(
+    map(user => {
+      if (user) {
         return router.createUrlTree(['/home']);
       }
       return true;

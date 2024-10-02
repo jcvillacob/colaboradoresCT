@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/authentication/auth.service';
+import { Store } from '@ngrx/store';
+import { Observable, switchMap } from 'rxjs';
+import { AuthState } from 'src/app/core/authentication/store/auth.reducer';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -9,7 +10,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ProyectosService {
   private apiUrl: string = environment.apiURL;
-  public icons: {class: string, name: string}[] = [
+  public icons: { class: string, name: string }[] = [
     { class: 'fa fa-user', name: 'Usuario' },
     { class: 'fa fa-envelope', name: 'Correo' },
     { class: 'fa fa-check', name: 'Verificar' },
@@ -62,15 +63,23 @@ export class ProyectosService {
     { class: 'fa fa-plane', name: 'Avión' },
     { class: 'fa fa-soap', name: 'Reproducir' }
   ];
+  userLogged$!: Observable<any>;
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient, private store: Store<{ auth: AuthState }>) {
+    this.userLogged$ = this.store.select(state => state.auth.user)
   }
 
   /* Proyectos */
   getProyectos(): Observable<any[]> {
-    const usuarioID = this.authService.getUsuarioID();
-    return this.http.get<any[]>(`${this.apiUrl}/proyectos/usuario/${usuarioID}`);
+    return this.userLogged$.pipe(
+      switchMap(user => {
+        const usuarioID = user?.UsuarioID;
+        console.log(usuarioID);
+        return this.http.get<any[]>(`${this.apiUrl}/proyectos/usuario/${usuarioID}`);
+      })
+    );
   }
+
 
   getViewProyectos(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/proyectos/view`);
@@ -159,7 +168,7 @@ export class ProyectosService {
     return this.http.post<any[]>(`${this.apiUrl}/subtareas`, data);
   }
 
-  completeSubtarea( SubtareaID: number, data: any): Observable<any[]> {
+  completeSubtarea(SubtareaID: number, data: any): Observable<any[]> {
     return this.http.put<any[]>(`${this.apiUrl}/subtareas/${SubtareaID}`, data);
   }
 
