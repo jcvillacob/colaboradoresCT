@@ -23,4 +23,10 @@ export class HomeMainComponent {
     });
   }
 
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    target.src = 'ruta/a/imagen-de-respaldo.jpg';
+  }
+
+
 }
