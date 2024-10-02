@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
-import { AuthService } from './core/authentication/auth.service';
-
+import { Store } from '@ngrx/store';
+import * as AuthActions from './core/authentication/store/auth.actions';
+import { AuthState } from './core/authentication/store/auth.reducer';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -9,12 +12,17 @@ import { AuthService } from './core/authentication/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  isLoggedIn$!: Observable<boolean>;
 
-  isLoggedIn$ = this.authService.isLoggedIn$;
-
-  constructor(private authService: AuthService) {}
+  constructor(private store: Store<{ auth: AuthState }>) { }
 
   ngOnInit(): void {
     initFlowbite();
+
+    this.store.dispatch(AuthActions.autoLogin());
+
+    this.isLoggedIn$ = this.store.select(state => state.auth.user).pipe(
+      map(user => !!user)
+    );
   }
 }

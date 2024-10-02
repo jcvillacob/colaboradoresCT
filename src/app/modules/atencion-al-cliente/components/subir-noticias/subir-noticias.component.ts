@@ -3,6 +3,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { AuthService } from 'src/app/core/authentication/auth.service';
 import { ClienteExternoService } from '../../services/cliente-externo.service';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AuthState } from 'src/app/core/authentication/store/auth.reducer';
 
 @Component({
   selector: 'app-subir-noticias',
@@ -14,8 +17,11 @@ export class SubirNoticiasComponent implements OnInit {
   imagePreview!: SafeUrl;
   archivoSeleccionado: File | null = null;
   showToast: boolean = false;
+  userLogged$!: Observable<any>;
 
-  constructor(private sanitizer: DomSanitizer, private authService: AuthService, private clienteExternoService: ClienteExternoService) { }
+  constructor(private sanitizer: DomSanitizer, private clienteExternoService: ClienteExternoService, private store: Store<{ auth: AuthState }>) {
+    this.userLogged$ = this.store.select(state => state.auth.user);
+  }
 
   ngOnInit() {
     this.noticiaForm = new FormGroup({
@@ -43,7 +49,9 @@ export class SubirNoticiasComponent implements OnInit {
       alert('Por favor, seleccione un archivo');
       return;
     }
-    const creadorID = this.authService.getUsuarioID();
+    const creadorID: any = this.userLogged$.subscribe( user => {
+      return user.UsuarioID
+    });
     const formData = new FormData();
     formData.append('titulo', this.noticiaForm.value.title);
     formData.append('autor', this.noticiaForm.value.autor);
