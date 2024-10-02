@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { BlogsEffects } from './store/blogs.effects';
+import { EffectsModule } from '@ngrx/effects';
+import { blogsReducer } from './store/blogs.reducer';
 
 
 
@@ -18,6 +21,7 @@ import { SubirNoticiasComponent } from './components/subir-noticias/subir-notici
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PqrsComponent } from './components/pqrs/pqrs.component';
 import { PqrsIndividualComponent } from './components/pqrs/pqrs-individual/pqrs-individual.component';
+import { StoreModule } from '@ngrx/store';
 
 
 @NgModule({
@@ -39,7 +43,9 @@ import { PqrsIndividualComponent } from './components/pqrs/pqrs-individual/pqrs-
     AtencionAlClienteRoutingModule,
     FormsModule,
     CKEditorModule,
-    SharedModule
+    SharedModule,
+    StoreModule.forFeature('blogs', blogsReducer),
+    EffectsModule.forFeature([BlogsEffects])
   ]
 })
 export class AtencionAlClienteModule { }

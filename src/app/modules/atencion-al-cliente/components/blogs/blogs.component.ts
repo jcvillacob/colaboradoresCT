@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ClienteExternoService } from '../../services/cliente-externo.service';
 import { ActivatedRoute } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import * as BlogsActions from '../../store/blogs.actions';
+import * as fromBlogs from '../../store/blogs.reducer';
+
 
 @Component({
   selector: 'app-blogs',
@@ -8,36 +13,32 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./blogs.component.scss']
 })
 export class BlogsComponent implements OnInit {
-  blog: any = {};
+  blog!: Observable<any>;
   spinner: boolean = true;
 
-  constructor (private clienteExternoService: ClienteExternoService, private route: ActivatedRoute) {
-
-  }
+  constructor (private clienteExternoService: ClienteExternoService, private route: ActivatedRoute, private store: Store<{ blogs: fromBlogs.BlogsState }>) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      const blogId = +params['id'];
-      if (blogId) {
-        this.loadBlog(blogId);
+      const id = +params['id'];
+      if (id) {
+        this.store.dispatch(BlogsActions.loadBlog({ id }));
       } else {
         console.error('Blog ID is required');
       }
+      this.blog = this.store.pipe(select((state) => state.blogs.blog));
+
+      // Oculta el spinner cuando el blog es emitido
+      this.blog.subscribe({
+        next: (blogData) => {
+          if (blogData) {
+            setTimeout(() => {
+              this.spinner = false;
+            }, 1000)
+          }
+        },
+        error: (err) => console.error('Error loading blog data', err)
+      });
     });
   }
-
-  loadBlog(blogId: number): void {
-    this.clienteExternoService.getBlog(blogId).subscribe({
-      next: (result: any) => {
-        this.blog = result;
-        setTimeout(() => {
-          this.spinner = false;
-        }, 800);
-      },
-      error: (error) => {
-        console.error('Error loading the blog:', error);
-      }
-    });
-  }
-
 }
