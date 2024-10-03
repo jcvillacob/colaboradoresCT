@@ -1,9 +1,8 @@
-
-<div class="mt-24"  *ngIf="spinner">
+<div class="mt-24" *ngIf="spinner">
   <app-spinner></app-spinner>
 </div>
 
-<section class=""  *ngIf="!spinner">
+<section class="" *ngIf="!spinner">
   <div class="max-w-screen-xl px-4 py-8 mx-auto lg:py-16">
     <div class="grid gap-8 items-center lg:grid-cols-12">
       <div class="lg:col-span-7">
@@ -29,7 +28,7 @@
 </section>
 
 <!-- Blog -->
-<section class="py-12 px-4"  *ngIf="!spinner">
+<section class="py-12 px-4" *ngIf="!spinner">
   <div class="max-w-6xl mx-auto">
     <!-- Título de la Sección -->
     <div class="text-center mb-12 mt-4">
@@ -41,14 +40,22 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       <!-- Card -->
       <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" *ngFor="let blog of blogs">
-        <a href="#">
-          <img class="rounded-t-lg" [src]="blog.UrlImg" alt="" />
+        <!-- Envolver la imagen en un enlace que redirige al blog -->
+        <a [routerLink]="['../atencion-al-cliente/blogs', blog.BlogID]"
+          class="block hover:opacity-75 transition-opacity duration-300">
+          <img class="w-full h-48 object-cover rounded-t-lg" [src]="blog.UrlImg" alt="{{ blog.Titulo }}" loading="lazy"
+            (error)="onImageError($event)" />
         </a>
         <div class="p-5">
-          <a href="#">
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ blog.Titulo }}</h5>
+          <!-- Envolver el título en un enlace que redirige al blog -->
+          <a [routerLink]="['../atencion-al-cliente/blogs', blog.BlogID]">
+            <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+              {{ blog.Titulo.length > 60 ? (blog.Titulo.substring(0, 60) + '...') : blog.Titulo }}
+            </h5>
           </a>
-          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ blog.Resumen }}</p>
+          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+            {{ blog.Resumen.length > 120 ? (blog.Resumen.substring(0, 120) + '...') : blog.Resumen }}
+          </p>
           <a [routerLink]="['../atencion-al-cliente/blogs', blog.BlogID]"
             class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Leer Blog

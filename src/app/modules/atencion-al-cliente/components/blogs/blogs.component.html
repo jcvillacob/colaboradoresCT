@@ -1,30 +1,32 @@
-<div class="mt-24"  *ngIf="spinner">
+<div class="mt-24" *ngIf="spinner">
   <app-spinner></app-spinner>
 </div>
 
-<div class="mx-auto mt-10 max-w-2xl"  *ngIf="!spinner">
-  <article class="mx-auto w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+<div class="mx-auto mt-10 max-w-2xl" *ngIf="!spinner && (blog | async)">
+  <article class="mx-auto mb-24 w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
     <header class="mb-4 lg:mb-6 not-format">
       <!-- Encabezado revisado -->
       <address class="flex items-center mb-6 not-italic">
         <div class="flex items-center mr-3">
-          <img class="mr-4 w-16 h-16 rounded-full object-cover" [src]="blog.UrlImg" alt="Foto de perfil">
+          <img class="mr-4 w-16 h-16 rounded-full object-cover" [src]="(blog | async)?.UrlImg" alt="Foto de perfil">
           <div>
-            <p class="text-xl font-bold text-gray-900 dark:text-white">{{ blog.Autor }}</p>
-            <p class="italic text-base text-gray-500 dark:text-gray-400">{{ blog.Ocupacion }}</p>
-            <p class="text-base text-gray-500 dark:text-gray-400"><time pubdate datetime="2022-02-08"
-                title="February 8th, 2022">{{ blog.FechaCreacion | date }}</time></p>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">{{ (blog | async)?.Autor }}</p>
+            <p class="italic text-base text-gray-500 dark:text-gray-400">{{ (blog | async)?.Ocupacion }}</p>
+            <p class="text-base text-gray-500 dark:text-gray-400">
+              <time pubdate datetime="2022-02-08" title="February 8th, 2022">
+                {{ (blog | async)?.FechaCreacion | date }}
+              </time>
+            </p>
           </div>
         </div>
       </address>
-
-      <div class="text-sm text-gray-900 dark:text-white">
-        <p class="text-base text-gray-500 dark:text-gray-400">Publicado por <strong>{{ blog.Creador }}</strong></p>
-      </div>
-
-      <!-- Blog -->
-      <div class="ck-content" [innerHTML]="blog.Blog"></div>
-
     </header>
+
+    <div class="text-sm text-gray-900 dark:text-white">
+      <p class="text-base text-gray-500 dark:text-gray-400">Publicado por <strong>{{ (blog | async)?.Creador }}</strong></p>
+    </div>
+
+    <!-- Blog -->
+    <div class="ck-content" [innerHTML]="(blog | async)?.Blog"></div>
   </article>
 </div>

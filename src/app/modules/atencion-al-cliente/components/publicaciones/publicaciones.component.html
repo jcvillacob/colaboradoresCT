@@ -1,5 +1,5 @@
 <section class="w-full h-full">
-  <!-- Botón de agregar publicacíon -->
+  <!-- Botón de agregar publicación -->
   <app-agregar-publicacion></app-agregar-publicacion>
 
   <!-- Noticias -->
@@ -7,8 +7,8 @@
   <!-- Tabla de Noticias -->
   <app-tabla-publicacion [datosTabla]="noticias" [tipo]="'Noticias'" (eliminar)="eliminar()"></app-tabla-publicacion>
 
-  <!-- Titulo -->
+  <!-- Título -->
   <h1 class="text-4xl font-bold leading-tight text-gray-900 dark:text-white mb-4 mt-10">Todos los Blogs</h1>
   <!-- Tabla de Blogs -->
-  <app-tabla-publicacion [datosTabla]="blogs" [tipo]="'Blogs'" (eliminar)="eliminar()"></app-tabla-publicacion>
+  <app-tabla-publicacion [datosTabla]="blogs$ | async" [tipo]="'Blogs'" (eliminar)="eliminar()"></app-tabla-publicacion>
 </section>
