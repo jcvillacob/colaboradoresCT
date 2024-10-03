@@ -6,6 +6,8 @@ import { ClienteExternoService } from '../../services/cliente-externo.service';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AuthState } from 'src/app/core/authentication/store/auth.reducer';
+import * as BlogsActions from '../../store/blogs.actions';
+import { BlogsState } from '../../store/blogs.reducer';
 
 @Component({
   selector: 'app-subir-publicacion',
@@ -31,7 +33,7 @@ export class SubirPublicacionComponent implements OnInit, OnDestroy {
   constructor(
     private sanitizer: DomSanitizer,
     private clienteExternoService: ClienteExternoService,
-    private store: Store<{ auth: AuthState }>
+    private store: Store<{ auth: AuthState, blogs: BlogsState }>,
   ) {
     this.userLogged$ = this.store.select(state => state.auth.user);
     this.uploadUrl = this.clienteExternoService.getApiUpload();
@@ -107,14 +109,15 @@ export class SubirPublicacionComponent implements OnInit, OnDestroy {
 
   private deleteTemporaryImages(): void {
     if (this.temporaryImages.length > 0) {
-      this.clienteExternoService.deleteTemporaryImages(this.temporaryImages).subscribe(
+      console.log(this.temporaryImages);
+      this.store.dispatch(BlogsActions.deleteTemporaryImages({ imageUrls: this.temporaryImages }));
+      /* this.clienteExternoService.deleteTemporaryImages(this.temporaryImages).subscribe(
         () => {
-          console.log('Imágenes temporales eliminadas');
         },
         (error) => {
           console.error('Error al eliminar imágenes temporales:', error);
         }
-      );
+      ); */
     }
   }
 

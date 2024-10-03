@@ -76,4 +76,17 @@ export class BlogsEffects {
       )
     )
   );
+
+  // Efecto para eliminar las imágenes temporales
+  eliminarImagenesTemporales$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BlogsActions.deleteTemporaryImages),
+      mergeMap(action =>
+        this.blogsService.deleteTemporaryImages(action.imageUrls).pipe(
+          map((message) => BlogsActions.deleteTemporaryImagesSuccess({ message  })),
+          catchError(error => of(BlogsActions.deleteTemporaryImagesFailure({ error })))
+        )
+      )
+    )
+  );
 }

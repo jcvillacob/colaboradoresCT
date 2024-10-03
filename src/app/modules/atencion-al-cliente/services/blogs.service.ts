@@ -35,7 +35,6 @@ export class BlogsService {
     return this.http.delete(`${this.apiUrl}/blogs/${blogDataID}`);
   }
 
-  // Método para eliminar imágenes temporales
   deleteTemporaryImages(imageUrls: string[]): Observable<any> {
     return this.http.post(`${this.apiUrl}/blogs/delete-temporary-images`, { images: imageUrls });
   }

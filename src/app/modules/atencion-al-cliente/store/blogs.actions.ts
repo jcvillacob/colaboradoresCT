@@ -85,3 +85,21 @@ export const deleteBlogFailure = createAction(
   '[Blog] Eliminar Blog Error',
   props<{ error: any }>()
 );
+
+// Acción para eliminar Imágenes Temporales
+export const deleteTemporaryImages = createAction(
+  '[Blog] Eliminar Imagenes Temporales',
+  props<{ imageUrls: string[] }>()
+);
+
+// Acción que se dispara cuando el blog se ha eliminado exitosamente
+export const deleteTemporaryImagesSuccess = createAction(
+  '[Blog] Eliminar Imagenes Temporales Exito',
+  props<{ message: any }>()
+);
+
+// Acción que se dispara si hay un error al eliminar el blog
+export const deleteTemporaryImagesFailure = createAction(
+  '[Blog] Eliminar Imagenes Temporales Error',
+  props<{ error: any }>()
+);

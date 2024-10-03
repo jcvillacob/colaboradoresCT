@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ClienteExternoService } from '../../../services/cliente-externo.service';
 import Swal from 'sweetalert2';
+import { Store } from '@ngrx/store';
+import * as BlogsActions from '../../../store/blogs.actions';
+import * as fromBlogs from '../../../store/blogs.reducer';
 
 
 @Component({
@@ -13,10 +16,10 @@ export class TablaPublicacionComponent {
   @Input() tipo!: string;
   @Output() eliminar = new EventEmitter<any>();
 
-  constructor(private clienteExternoService: ClienteExternoService) {
+  constructor(private clienteExternoService: ClienteExternoService, private store: Store<{ blogs: fromBlogs.BlogsState }>) {
   }
 
-  eliminarPublicacion(publicacionID: number) {
+  eliminarPublicacion(blogDataID: number) {
     Swal.fire({
       title: '¿Estás seguro?',
       text: "Se elimirá la publicación",
@@ -29,13 +32,14 @@ export class TablaPublicacionComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         if (this.tipo === 'Noticias') {
-          this.clienteExternoService.eliminarNoticia(publicacionID).subscribe(data => {
+          this.clienteExternoService.eliminarNoticia(blogDataID).subscribe(data => {
             this.eliminar.emit(data);
           });
         } else {
-          this.clienteExternoService.eliminarBlog(publicacionID).subscribe(data => {
+          this.store.dispatch(BlogsActions.deleteBlog({ blogDataID }));
+          /* this.clienteExternoService.eliminarBlog(publicacionID).subscribe(data => {
             this.eliminar.emit(data);
-          });
+          }); */
         }
         Swal.fire(
           'Completado!',

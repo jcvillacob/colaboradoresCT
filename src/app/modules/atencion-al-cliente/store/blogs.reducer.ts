@@ -77,7 +77,7 @@ export const blogsReducer = createReducer(
   on(BlogsActions.updateBlogSuccess, (state, { blog }) => ({
     ...state,
     loading: false,
-    blogs: state.blogs.map(b => b.id === blog.id ? blog : b),
+    blogs: state.blogs.map(b => b.BlogID === blog.BlogID ? blog : b),
   })),
   on(BlogsActions.updateBlogFailure, (state, { error }) => ({
     ...state,
@@ -94,9 +94,25 @@ export const blogsReducer = createReducer(
   on(BlogsActions.deleteBlogSuccess, (state, { blogDataID }) => ({
     ...state,
     loading: false,
-    blogs: state.blogs.filter(b => b.id !== blogDataID),
+    blogs: state.blogs.filter(b => b.BlogID !== blogDataID),
   })),
   on(BlogsActions.deleteBlogFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  // Eliminar imágenes temporales
+  on(BlogsActions.deleteTemporaryImages, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(BlogsActions.deleteTemporaryImagesSuccess, (state, { message }) => ({
+    ...state,
+    loading: false,
+  })),
+  on(BlogsActions.deleteTemporaryImagesFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error,
