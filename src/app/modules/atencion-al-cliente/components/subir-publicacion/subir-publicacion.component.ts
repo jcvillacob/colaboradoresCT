@@ -27,8 +27,7 @@ export class SubirPublicacionComponent implements OnInit, OnDestroy {
   imagePreview!: SafeUrl;
   userLogged$!: Observable<any>;
 
-  // Arreglo para almacenar las URLs de las imágenes temporales
-  private temporaryImages: string[] = [];
+  private temporaryImages: string[] = [];  // Arreglo para almacenar las URLs de las imágenes temporales
 
   constructor(
     private sanitizer: DomSanitizer,
