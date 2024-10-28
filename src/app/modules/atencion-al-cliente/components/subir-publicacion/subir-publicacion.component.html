@@ -33,25 +33,42 @@
       placeholder="Pequeño Resumen" required></textarea>
   </div>
   <div class="mb-6">
-    <label for="cover" class="block mb-2 text-sm font-medium text-gray-900">Imagen de portada</label>
+    <!-- Campo para Imagen de Autor -->
+    <label for="authorImage" class="block mb-2 text-sm font-medium text-gray-900">Imagen de Autor</label>
     <div class="flex items-center justify-center w-full">
       <label class="flex flex-col w-full h-32 border-4 border-dashed hover:bg-gray-100 hover:border-gray-300">
         <div class="flex flex-col items-center justify-center pt-7">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-400 group-hover:text-gray-600" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M4 8h16M4 12h16m-7-4V4l-5 5m5-5v5l5-5" />
-          </svg>
+          <!-- ...iconos y textos... -->
           <p class="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
-            Subir Imagen
+            Subir Imagen de Autor
           </p>
         </div>
-        <input type="file" id="cover" class="opacity-0" (change)="onFileSelected($event)" accept="image/*">
+        <input type="file" id="authorImage" class="opacity-0" (change)="onFileSelected($event, 'authorImage')"
+          accept="image/*">
       </label>
     </div>
-    <div *ngIf="imagePreview" class="mt-2">
-      <img [src]="imagePreview" class="max-w-xs max-h-32 rounded-lg" alt="Vista previa de la imagen">
+    <div *ngIf="imagePreviewAutor" class="mt-2">
+      <img [src]="imagePreviewAutor" class="max-w-xs max-h-32 rounded-lg" alt="Vista previa de la imagen de autor">
     </div>
+
+    <!-- Campo para Imagen de portada -->
+    <label for="coverImage" class="block mb-2 text-sm font-medium text-gray-900">Imagen de portada</label>
+    <div class="flex items-center justify-center w-full">
+      <label class="flex flex-col w-full h-32 border-4 border-dashed hover:bg-gray-100 hover:border-gray-300">
+        <div class="flex flex-col items-center justify-center pt-7">
+          <!-- ...iconos y textos... -->
+          <p class="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
+            Subir Imagen de Portada
+          </p>
+        </div>
+        <input type="file" id="coverImage" class="opacity-0" (change)="onFileSelected($event, 'coverImage')"
+          accept="image/*">
+      </label>
+    </div>
+    <div *ngIf="imagePreviewPortada" class="mt-2">
+      <img [src]="imagePreviewPortada" class="max-w-xs max-h-32 rounded-lg" alt="Vista previa de la imagen de portada">
+    </div>
+
   </div>
 
   <!-- CKEditor -->
