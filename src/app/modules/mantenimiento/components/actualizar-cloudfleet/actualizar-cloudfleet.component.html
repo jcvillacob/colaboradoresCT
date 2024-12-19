@@ -1,0 +1,99 @@
+<div class="relative">
+    <h2 class="text-3xl font-bold mt-14 ml-5">
+      Actualizar datos OT de CloudFleet
+    </h2>
+  
+    <!-- Botón de actualizar -->
+    <div class="mt-5 ml-5">
+      <button
+        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded shadow"
+        (click)="onUpdateClick()"
+      >
+        <!-- Si está actualizando muestra texto de "Actualizando..." -->
+        <span *ngIf="!isUpdating; else updatingTpl">Actualizar</span>
+        <ng-template #updatingTpl>Actualizando...</ng-template>
+      </button>
+    </div>
+  
+    <!-- Tabla de últimas actualizaciones -->
+    <h3 class="text-2xl font-semibold mt-10 ml-5">Últimas Actualizaciones</h3>
+    <div class="overflow-x-auto mt-5 ml-5 mr-5">
+      <table
+        class="min-w-full divide-y divide-gray-200 bg-white shadow rounded-lg"
+      >
+        <thead class="bg-gray-100">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+            >
+              Hora Inicio
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+            >
+              Hora Final
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+            >
+              Nuevas OT
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+            >
+              OT Actualizadas
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+            >
+              Nuevos Issues
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+            >
+              Issues Actualizados
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+            >
+              Nuevos Checklists
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+            >
+              Checklists Actualizados
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <!-- Agregamos let i=index para poder controlar la lógica de la primera fila -->
+          <tr *ngFor="let log of logs; let i = index">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <!-- Formateo de la hora de inicio -->
+              {{ log.hora_inicio | date:'dd/MM/yyyy HH:mm:ss':'UTC' }}
+            </td>
+  
+            <td class="px-6 py-4 whitespace-nowrap">
+              <!-- Si hora_final existe y es válida, se muestra formateada -->
+              <ng-container *ngIf="log.hora_final; else errorTemplate">
+                {{ log.hora_final | date:'dd/MM/yyyy HH:mm:ss':'UTC' }}
+              </ng-container>
+              <!-- Si hora_final es nula o inválida, aplicamos lógica según el index -->
+              <ng-template #errorTemplate>
+                <span *ngIf="i === 0" class="text-gray-500">Cargando</span>
+                <span *ngIf="i !== 0" class="text-red-500">Error</span>
+              </ng-template>
+            </td>
+  
+            <td class="px-6 py-4 whitespace-nowrap">{{ log.new_orders }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ log.updated_orders }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ log.new_issues }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ log.updated_issues }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ log.new_checklists }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ log.updated_checklists }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

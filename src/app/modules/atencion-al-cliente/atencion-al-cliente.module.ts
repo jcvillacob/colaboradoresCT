@@ -5,9 +5,6 @@ import { BlogsEffects } from './store/blogs.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { blogsReducer } from './store/blogs.reducer';
 
-
-
-
 import { AtencionAlClienteRoutingModule } from './atencion-al-cliente-routing.module';
 import { AtencionaAlClienteMainComponent } from './components/atenciona-al-cliente-main/atenciona-al-cliente-main.component';
 import { AgregarPublicacionComponent } from './components/publicaciones/agregar-publicacion/agregar-publicacion.component';
