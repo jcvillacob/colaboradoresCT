@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as AuthActions from '../store/auth.actions';
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   username!: string;
@@ -14,12 +13,17 @@ export class LoginComponent {
   showToast: boolean = false;
   cargando: boolean = false;
 
-
-  constructor(private store: Store) { }
+  constructor(private store: Store) {}
 
   login() {
     this.cargando = true;
-    this.store.dispatch(AuthActions.login({ username: this.username, password: this.password }));
+    this.store.dispatch(
+      AuthActions.login({
+        username: this.username,
+        password: this.password,
+        redirect: true,
+      })
+    );
     setTimeout(() => {
       this.cargando = false;
     }, 2000);

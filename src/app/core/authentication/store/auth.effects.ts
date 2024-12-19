@@ -20,7 +20,7 @@ export class AuthEffects {
             if (response && response.token) {
               localStorage.setItem('currentUser', JSON.stringify(response));
               const user = this.decodeToken(response.token);
-              return AuthActions.loginSuccess({ user });
+              return AuthActions.loginSuccess({ user, redirect: action.redirect });
             } else {
               return AuthActions.loginFailure({ error: 'Credenciales inválidas' });
             }
@@ -32,6 +32,7 @@ export class AuthEffects {
       )
     )
   );
+  
 
 
   // Efecto para manejar el inicio de sesión automático
@@ -81,12 +82,16 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.loginSuccess),
-        tap(() => {
-          //this.router.navigate(['home']);
+        tap((action) => {
+          // Redirige sólo si se lo indicamos
+          if (action.redirect) {
+            this.router.navigate(['/home']);
+          }
         })
       ),
     { dispatch: false }
   );
+  
 
   logout$ = createEffect(
     () =>
