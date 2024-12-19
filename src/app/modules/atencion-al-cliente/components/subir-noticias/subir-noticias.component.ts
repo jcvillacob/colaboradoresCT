@@ -49,14 +49,17 @@ export class SubirNoticiasComponent implements OnInit {
       alert('Por favor, seleccione un archivo');
       return;
     }
-    const creadorID: any = this.userLogged$.subscribe( user => {
-      return user.UsuarioID
-    });
+    
+    let creadorID: any | null = null;
+    this.userLogged$.subscribe(user => {
+      creadorID = user?.UsuarioID;
+    }).unsubscribe();
+
     const formData = new FormData();
     formData.append('titulo', this.noticiaForm.value.title);
     formData.append('autor', this.noticiaForm.value.autor);
     formData.append('descripcion', this.noticiaForm.value.summary);
-    formData.append('creadorID', creadorID);
+    formData.append('creadorID', creadorID.toString());
     formData.append('image', this.archivoSeleccionado);
 
     this.clienteExternoService.crearNoticia(formData).subscribe(data => {

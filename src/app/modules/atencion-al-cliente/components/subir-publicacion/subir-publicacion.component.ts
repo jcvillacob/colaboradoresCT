@@ -19,7 +19,7 @@ export class SubirPublicacionComponent implements OnInit, OnDestroy {
   public Editor = ClassicEditor;
   public editorInstance: any;
   blogForm!: FormGroup;
-  archivoSeleccionado: File | null = null;
+  //archivoSeleccionado: File | null = null;
   showToast: boolean = false;
   htmlContent = '<p>Creemos un nuevo Blog!</p>';
   uploadUrl = 'https://ctapp.coorditanques.com/colaboradoresBack/api/v1/blogs/upload';
@@ -27,8 +27,13 @@ export class SubirPublicacionComponent implements OnInit, OnDestroy {
   imagePreview!: SafeUrl;
   userLogged$!: Observable<any>;
 
-  // Arreglo para almacenar las URLs de las imágenes temporales
-  private temporaryImages: string[] = [];
+  archivoSeleccionadoAutor: File | null = null;
+  archivoSeleccionadoPortada: File | null = null;
+
+  imagePreviewAutor!: SafeUrl;
+  imagePreviewPortada!: SafeUrl;
+
+  private temporaryImages: string[] = [];  // Arreglo para almacenar las URLs de las imágenes temporales
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -121,21 +126,28 @@ export class SubirPublicacionComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFileSelected(event: any): void {
+  onFileSelected(event: any, imageType: string): void {
     const file: File = event.target.files[0];
     if (event.target.files && event.target.files.length) {
-      this.archivoSeleccionado = event.target.files[0];
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.imagePreview = this.sanitizer.bypassSecurityTrustUrl(e.target.result);
+        const safeUrl = this.sanitizer.bypassSecurityTrustUrl(e.target.result);
+        if (imageType === 'authorImage') {
+          this.archivoSeleccionadoAutor = file;
+          this.imagePreviewAutor = safeUrl;
+        } else if (imageType === 'coverImage') {
+          this.archivoSeleccionadoPortada = file;
+          this.imagePreviewPortada = safeUrl;
+        }
       };
       reader.readAsDataURL(file);
     }
   }
 
+
   subirBlog() {
-    if (!this.archivoSeleccionado) {
-      alert('Por favor, seleccione una imagen de portada');
+    if (!this.archivoSeleccionadoAutor || !this.archivoSeleccionadoPortada) {
+      alert('Por favor, seleccione ambas imágenes: Imagen de Autor e Imagen de portada');
       return;
     }
 
@@ -156,7 +168,8 @@ export class SubirPublicacionComponent implements OnInit, OnDestroy {
     formData.append('resumen', this.blogForm.value.summary);
     formData.append('creadorID', creadorID.toString());
     formData.append('blog', this.blogForm.get('htmlContent')?.value);
-    formData.append('image', this.archivoSeleccionado);
+    formData.append('imageAutor', this.archivoSeleccionadoAutor!);
+    formData.append('imagePortada', this.archivoSeleccionadoPortada!);
 
     this.clienteExternoService.crearBlog(formData).subscribe(
       data => {
@@ -169,8 +182,14 @@ export class SubirPublicacionComponent implements OnInit, OnDestroy {
           summary: '',
           htmlContent: '<p>Creemos un nuevo Blog!</p>'
         });
+        this.archivoSeleccionadoAutor = null;
+        this.archivoSeleccionadoPortada = null;
+        this.imagePreviewAutor = '';
+        this.imagePreviewPortada = '';
+
         // Limpiamos el arreglo de imágenes temporales ya que el blog se guardó
         this.temporaryImages = [];
+        this.showToast = true;
         setTimeout(() => {
           this.showToast = false;
         }, 5000);
@@ -181,6 +200,7 @@ export class SubirPublicacionComponent implements OnInit, OnDestroy {
       }
     );
   }
+
 
   goBack() {
     window.history.back();
@@ -223,6 +243,5 @@ class UploadAdapter {
   }
 
   abort() {
-    // Implementar si es necesario
   }
 }

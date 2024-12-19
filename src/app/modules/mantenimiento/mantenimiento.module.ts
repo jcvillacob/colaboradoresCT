@@ -7,6 +7,7 @@ import { MantenimientoHomeComponent } from './components/mantenimiento-home/mant
 import { NovedadesComponent } from './components/mantenimiento-novedades/novedades/novedades.component';
 import { CrucesComponent } from './components/mantenimiento-novedades/cruces/cruces.component';
 import { FormsModule } from '@angular/forms';
+import { ActualizarCloudfleetComponent } from './components/actualizar-cloudfleet/actualizar-cloudfleet.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { FormsModule } from '@angular/forms';
     MantenimientoMainComponent,
     MantenimientoHomeComponent,
     NovedadesComponent,
-    CrucesComponent
+    CrucesComponent,
+    ActualizarCloudfleetComponent
   ],
   imports: [
     CommonModule,
