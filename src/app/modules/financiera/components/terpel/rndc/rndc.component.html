@@ -1,0 +1,32 @@
+<div
+  class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden p-4 mt-8 flex flex-col mb-4"
+>
+  <!-- Subtítulo del container -->
+  <h3 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+    Actualizar reporte al RNDC
+  </h3>
+
+  <!-- Input para subir el archivo Excel -->
+  <div>
+    <input type="file" (change)="onFileChange($event)" accept=".xlsx, .xls" />
+  </div>
+
+  <!-- Mensaje que indica la cantidad de entradas encontradas -->
+  <div *ngIf="facturasCount !== null" class="mt-4">
+    <p>
+      Se encontraron <strong>{{ facturasCount }}</strong> facturas para
+      actualizar su reporte al <em>RNDC</em>.
+    </p>
+  </div>
+
+  <!-- Botón para actualizar RNDC, ubicado siempre debajo -->
+  <div class="mt-6 mx-auto">
+    <button
+      class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+      [disabled]="!facturasCount"
+      (click)="actualizarRNDC()"
+    >
+      Actualizar RNDC
+    </button>
+  </div>
+</div>

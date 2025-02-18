@@ -25,6 +25,12 @@ const routes: Routes = [
     data: { roles: ['Financiera'] }
   },
   {
+    path: 'contabilidad',
+    loadChildren: () => import('./modules/contabilidad/contabilidad.module').then(m => m.ContabilidadModule),
+    canActivate: [AuthGuard],
+    data: { roles: ['Contabilidad'] }
+  },
+  {
     path: 'atencion-al-cliente',
     loadChildren: () => import('./modules/atencion-al-cliente/atencion-al-cliente.module').then(m => m.AtencionAlClienteModule),
     canActivate: [AuthGuard],

@@ -1,0 +1,172 @@
+<!-- Título principal con estilo mejorado -->
+<h2 class="text-4xl font-extrabold py-5 ml-5 text-gray-800 dark:text-white">Causaciones</h2>
+
+<!-- Controles de búsqueda, ordenamiento y conteo de facturas -->
+<div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden p-4 mb-4">
+  <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4">
+    <!-- Número de Facturas por causar -->
+    <div class="w-full md:w-auto text-center md:text-left">
+      <span class="text-lg font-bold text-gray-800 dark:text-white">Facturas por causar:</span>
+      <span class="ml-2 text-lg text-blue-600 font-extrabold">
+        {{ filterAndSort((facturas$ | async) || []).length }}
+      </span>
+    </div>
+    <!-- Buscador -->
+    <div class="w-full md:w-1/2">
+      <form class="flex items-center">
+        <label for="buscar-causacion" class="sr-only">Buscar</label>
+        <div class="relative w-full">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" 
+              viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" 
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" 
+                clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <input type="text" id="buscar-causacion" placeholder="Buscar por entidad o radicado..." 
+            [(ngModel)]="searchTerm" name="searchTerm"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 
+                   focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 
+                   dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+        </div>
+      </form>
+    </div>
+    <!-- Selector de ordenamiento -->
+    <div class="w-full md:w-auto">
+      <select [(ngModel)]="selectedSort"
+        class="border border-gray-300 rounded-lg text-sm py-2 px-4 bg-white dark:bg-gray-700 text-gray-900 
+               dark:text-white focus:ring-primary-500 focus:border-primary-500 block w-full">
+        <option value="">Ordenar por...</option>
+        <option value="fechaAsc">Fecha más cercana</option>
+        <option value="fechaDesc">Fecha más lejana</option>
+        <option value="valorDesc">Valor más alto</option>
+        <option value="valorAsc">Valor más bajo</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+
+<!-- Tabla de datos -->
+<div class="overflow-x-auto p-5">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <!-- Columna principal: Radicado -->
+        <th class="px-6 py-3 text-left text-xs font-bold text-white bg-black uppercase tracking-wider">
+          Radicado
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entidad</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Vencimiento</th>
+        <th class="px-6 py-3"></th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200" *ngIf="facturas$ | async as facturas">
+      <tr *ngFor="let factura of filterAndSort(facturas)">
+        <td class="px-6 py-4 whitespace-nowrap font-bold">{{ factura.radicado }}</td>
+        <td class="px-6 py-4 whitespace-nowrap">{{ factura.entidad }}</td>
+        <td class="px-6 py-4 whitespace-nowrap">{{ factura.valor }}</td>
+        <td class="px-6 py-4 whitespace-nowrap">{{ factura.fechaVencimiento }}</td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <button 
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            (click)="onLoadFactura(factura.radicado)">
+            Causar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal de detalle con formulario -->
+<div *ngIf="selectedFactura$ | async as factura" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-lg p-6 w-11/12 md:w-1/2 shadow-lg">
+    <h3 class="text-2xl font-bold mb-4 text-center">Detalle de Causación</h3>
+    <form (ngSubmit)="onSubmitCausacion(factura)" #causacionForm="ngForm" class="space-y-4">
+      
+      <!-- Primera fila: Radicado y Fecha de Vencimiento -->
+      <div class="flex flex-col md:flex-row md:space-x-4">
+        <div class="w-full md:w-1/2">
+          <label class="block text-sm font-medium text-gray-700">Radicado</label>
+          <input type="text" 
+                 class="mt-1 block w-full rounded-md border-gray-300 bg-gray-200" 
+                 [value]="factura.radicado" 
+                 disabled>
+        </div>
+        <div class="w-full md:w-1/2">
+          <label class="block text-sm font-medium text-gray-700">Fecha Vencimiento</label>
+          <input type="text" 
+                 class="mt-1 block w-full rounded-md border-gray-300 bg-gray-200" 
+                 [value]="factura.fechaVencimiento" 
+                 disabled>
+        </div>
+      </div>
+      
+      <!-- Segunda fila: Entidad -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Entidad</label>
+        <input type="text" 
+               class="mt-1 block w-full rounded-md border-gray-300 bg-gray-200" 
+               [value]="factura.entidad" 
+               disabled>
+      </div>
+      
+      <!-- Tercera fila: Valor y Nombre de Servicio -->
+      <div class="flex flex-col md:flex-row md:space-x-4">
+        <div class="w-full md:w-1/2">
+          <label class="block text-sm font-medium text-gray-700">Valor</label>
+          <input type="number" 
+                 class="mt-1 block w-full rounded-md border-gray-300 bg-gray-200" 
+                 [value]="factura.valor" 
+                 disabled>
+        </div>
+        <div class="w-full md:w-1/2">
+          <label for="nombreServicio" class="block text-sm font-medium text-gray-700">Nombre de Servicio</label>
+          <input type="text" 
+                 id="nombreServicio" 
+                 name="nombreServicio" 
+                 [(ngModel)]="nombreServicio" 
+                 required
+                 class="mt-1 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+      </div>
+      
+      <!-- Cuarta fila: Retención en la fuente y Reteica -->
+      <div class="flex flex-col md:flex-row md:space-x-4">
+        <div class="w-full md:w-1/2">
+          <label for="retencionFuente" class="block text-sm font-medium text-gray-700">Retención en la fuente</label>
+          <input type="text" 
+                 id="retencionFuente" 
+                 name="retencionFuente" 
+                 [(ngModel)]="retencionFuente" 
+                 required
+                 class="mt-1 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="w-full md:w-1/2">
+          <label for="reteica" class="block text-sm font-medium text-gray-700">Reteica</label>
+          <input type="text" 
+                 id="reteica" 
+                 name="reteica" 
+                 [(ngModel)]="reteica" 
+                 required
+                 class="mt-1 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+      </div>
+      
+      <!-- Botones de acción -->
+      <div class="flex justify-end space-x-4 mt-4">
+        <button type="button" (click)="cerrarModal()"
+                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+          Cerrar
+        </button>
+        <button type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Causar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
