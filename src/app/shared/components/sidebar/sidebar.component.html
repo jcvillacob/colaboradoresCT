@@ -159,19 +159,13 @@
         </button>
         <ul id="dropdown-financiera" class="hidden py-2 space-y-2">
           <li>
-            <a routerLink="financiera/novedades-cartera"
+            <a routerLink="financiera/novedades-cartera"  *ngIf="tieneSubrol('Novedades Cartera')"
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Novedad
               Cartera</a>
           </li>
           <li>
-            <a routerLink="innovacion/tareas"
-              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Seguimiento
-              Cartera</a>
-          </li>
-          <li>
-            <a routerLink="innovacion/ver-proyectos"
-              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Ver
-              Proyectos</a>
+            <a routerLink="financiera/facturacion-terpel"  *ngIf="tieneSubrol('Facturacion Terpel')"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Facturación Terpel</a>
           </li>
         </ul>
       </li>

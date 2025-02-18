@@ -9,7 +9,6 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class CausacionesService {
-  // Suponiendo que defines la URL base de la API en el environment (por ejemplo, http://localhost:3000/api)
   private apiUrl = environment.apiURL;
 
   constructor(private http: HttpClient) { }
