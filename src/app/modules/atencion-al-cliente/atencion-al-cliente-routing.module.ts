@@ -7,6 +7,7 @@ import { BlogsComponent } from './components/blogs/blogs.component';
 import { SubirNoticiasComponent } from './components/subir-noticias/subir-noticias.component';
 import { PqrsComponent } from './components/pqrs/pqrs.component';
 import { PqrsIndividualComponent } from './components/pqrs/pqrs-individual/pqrs-individual.component';
+import { BoletinComponent } from './components/boletin/boletin.component';
 
 const routes: Routes = [
   { path: '', component: AtencionAlClienteHomeComponent },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'pqrs-individual/:id', component: PqrsIndividualComponent },
   { path: 'subir-blog', component: SubirPublicacionComponent },
   { path: 'subir-noticia', component: SubirNoticiasComponent },
+  { path: 'boletines', component: BoletinComponent },
   { path: 'blogs/:id', component: BlogsComponent },
 ];
 

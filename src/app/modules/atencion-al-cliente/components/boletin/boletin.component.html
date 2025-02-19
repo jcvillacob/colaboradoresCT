@@ -1,0 +1,78 @@
+<h2 class="text-4xl font-extrabold py-5 ml-5 text-gray-800 dark:text-white">
+  Generar Boletín
+</h2>
+
+<div
+  class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden p-4 mt-8 flex flex-col mb-4"
+>
+  <!-- Botón de estado del boletín, posicionado en la esquina superior derecha -->
+  <button
+    class="absolute top-4 right-4 py-2 px-4 rounded text-white"
+    [ngClass]="{
+      'bg-green-500': boletinExistente,
+      'bg-red-500': !boletinExistente
+    }"
+  >
+    {{ boletinExistente ? "Boletín existente" : "Sin boletín" }}
+  </button>
+  <!-- Subtítulo del container -->
+  <h3 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+    Boletín Mensual
+  </h3>
+
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead
+      class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+    >
+      <tr>
+        <!-- Columna de checkbox para seleccionar -->
+        <th class="px-6 py-3">
+          <input
+            type="checkbox"
+            [checked]="allSelected"
+            (change)="toggleAllSelection($event)"
+          />
+        </th>
+        <th class="px-6 py-3">Título</th>
+        <th class="px-6 py-3">Autor</th>
+        <th class="px-6 py-3">Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let blog of blogs"
+        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+      >
+        <td class="px-6 py-4">
+          <input
+            type="checkbox"
+            [checked]="isSelected(blog)"
+            (change)="toggleSelection(blog)"
+          />
+        </td>
+        <td class="px-6 py-4">{{ blog.Titulo }}</td>
+        <td class="px-6 py-4">
+          <span *ngIf="blog.Autor; else noAutor">{{ blog.Autor }}</span>
+          <ng-template #noAutor>No hay Autor</ng-template>
+        </td>
+        <td class="px-6 py-4">
+          {{ blog.FechaCreacion | date : "dd/MM/yyyy" : "UTC" }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Mensaje si no se encontraron blogs para el mes actual -->
+  <div *ngIf="!blogs.length" class="w-full flex justify-center py-10 text-xl">
+    No se encontraron blogs para este mes.
+  </div>
+
+  <!-- Botón para crear boletín, habilitado solo cuando se seleccionan 4 blogs -->
+  <button
+    class="mt-4 bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50"
+    [disabled]="selectedBlogs.length !== 4"
+    (click)="crearBoletin()"
+  >
+    Crear Boletín
+  </button>
+</div>
