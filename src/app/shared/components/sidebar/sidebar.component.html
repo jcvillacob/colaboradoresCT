@@ -92,7 +92,7 @@
         </a>
       </li>
       <!-- Innovacion -->
-      <li *ngIf="tieneRol('Innovacion')">
+      <li *ngIf="(tieneRol('Innovacion') | async)">
         <button type="button" aria-controls="dropdown-innovacion" data-collapse-toggle="dropdown-innovacion"
           class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
           <svg
@@ -109,11 +109,11 @@
           </svg>
         </button>
         <ul id="dropdown-innovacion" class="hidden py-2 space-y-2">
-          <li *ngIf="tieneSubrol('Equipo Innovacion')">
+          <li *ngIf="(tieneSubrol('Equipo Innovacion') | async)">
             <a routerLink="innovacion/proyectos"
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Proyectos</a>
           </li>
-          <li *ngIf="tieneSubrol('Equipo Innovacion')">
+          <li *ngIf="(tieneSubrol('Equipo Innovacion') | async)">
             <a routerLink="innovacion/tareas"
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Tareas</a>
           </li>
@@ -125,7 +125,7 @@
         </ul>
       </li>
       <!-- Contabilidad -->
-      <li *ngIf="tieneRol('Contabilidad')">
+      <li *ngIf="(tieneRol('Contabilidad') | async)">
         <button type="button" aria-controls="dropdown-contabilidad" data-collapse-toggle="dropdown-contabilidad"
           class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
           <i
@@ -145,7 +145,7 @@
         </ul>
       </li>
       <!-- Financiera -->
-      <li *ngIf="tieneRol('Financiera')">
+      <li *ngIf="(tieneRol('Financiera') | async)">
         <button type="button" aria-controls="dropdown-financiera" data-collapse-toggle="dropdown-financiera"
           class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
           <i
@@ -158,19 +158,19 @@
           </svg>
         </button>
         <ul id="dropdown-financiera" class="hidden py-2 space-y-2">
-          <li>
-            <a routerLink="financiera/novedades-cartera"  *ngIf="tieneSubrol('Novedades Cartera')"
+          <li *ngIf="(tieneSubrol('Novedades Cartera') | async)">
+            <a routerLink="financiera/novedades-cartera" 
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Novedad
               Cartera</a>
           </li>
-          <li>
-            <a routerLink="financiera/facturacion-terpel"  *ngIf="tieneSubrol('Facturacion Terpel')"
+          <li *ngIf="(tieneSubrol('Facturacion Terpel') | async)">
+            <a routerLink="financiera/facturacion-terpel" 
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Facturación Terpel</a>
           </li>
         </ul>
       </li>
       <!-- Comercial -->
-      <li *ngIf="tieneRol('Comercial')">
+      <li *ngIf="(tieneRol('Comercial') | async)">
         <button type="button" aria-controls="dropdown-comercial" data-collapse-toggle="dropdown-comercial"
           class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
           <svg
@@ -202,7 +202,7 @@
         </ul>
       </li>
       <!-- Experiencia del Cliente -->
-      <li *ngIf="tieneRol('Cliente Externo')">
+      <li *ngIf="(tieneRol('Cliente Externo') | async)">
         <button type="button" aria-controls="dropdown-cliente" data-collapse-toggle="dropdown-cliente"
           class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
           <svg
@@ -235,7 +235,7 @@
         </ul>
       </li>
       <!-- Mantenimiento -->
-      <li *ngIf="tieneRol('Mantenimiento')">
+      <li *ngIf="(tieneRol('Mantenimiento') | async)">
         <button type="button" aria-controls="dropdown-mantenimiento" data-collapse-toggle="dropdown-mantenimiento"
           class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
           <svg
@@ -252,19 +252,19 @@
           </svg>
         </button>
         <ul id="dropdown-mantenimiento" class="hidden py-2 space-y-2">
-          <li>
-            <a routerLink="mantenimiento/novedades-combustible" *ngIf="tieneSubrol('Aprobar Cruces')"
+          <li *ngIf="(tieneSubrol('Aprobar Cruces') | async)">
+            <a routerLink="mantenimiento/novedades-combustible"
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Cruces
               combustible</a>
           </li>
-          <li>
-            <a routerLink="mantenimiento/actualizar-cloudfleet" *ngIf="tieneSubrol('Actualizar Cloudfleet')"
+          <li *ngIf="(tieneSubrol('Actualizar Cloudfleet') | async)">
+            <a routerLink="mantenimiento/actualizar-cloudfleet"
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Actualizar Cloudfleet</a>
           </li>
         </ul>
       </li>
       <!-- Conductores -->
-      <li *ngIf="tieneRol('Conductor')">
+      <li *ngIf="(tieneRol('Conductor') | async)">
         <button type="button" aria-controls="dropdown-condutor" data-collapse-toggle="dropdown-condutor"
           class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
           <i
@@ -276,18 +276,18 @@
           </svg>
         </button>
         <ul id="dropdown-condutor" class="hidden py-2 space-y-2">
-          <li>
-            <a routerLink="condutores/novedades" *ngIf="tieneSubrol('Subir Novedad')"
+          <li *ngIf="(tieneSubrol('Subir Novedad') | async)">
+            <a routerLink="condutores/novedades"
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Subir
               Novedad</a>
           </li>
-          <li>
-            <a routerLink="condutores/subir" *ngIf="tieneSubrol('Subir Archivos')"
+          <li *ngIf="(tieneSubrol('Subir Archivos') | async)">
+            <a routerLink="condutores/subir"
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Subir
               Archivos</a>
           </li>
-          <li>
-            <a routerLink="condutores/archivos" *ngIf="tieneSubrol('Subir Archivos')"
+          <li *ngIf="(tieneSubrol('Subir Archivos') | async)">
+            <a routerLink="condutores/archivos"
               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Archivos
               Subidos</a>
           </li>
@@ -303,7 +303,7 @@
         </ul>
       </li>
       <!-- Lavados -->
-      <li *ngIf="tieneRol('Lavados')">
+      <li *ngIf="(tieneRol('Lavados') | async)">
         <a href="#"
           class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
           <svg
@@ -316,7 +316,7 @@
         </a>
       </li>
       <!-- Usuarios -->
-      <li *ngIf="tieneRol('Usuarios')">
+      <li *ngIf="(tieneRol('Usuarios') | async)">
         <a routerLink="usuarios"
           class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
           <svg
