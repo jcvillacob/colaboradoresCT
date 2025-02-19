@@ -19,6 +19,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { PqrsComponent } from './components/pqrs/pqrs.component';
 import { PqrsIndividualComponent } from './components/pqrs/pqrs-individual/pqrs-individual.component';
 import { StoreModule } from '@ngrx/store';
+import { BoletinComponent } from './components/boletin/boletin.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { StoreModule } from '@ngrx/store';
     BlogsComponent,
     SubirNoticiasComponent,
     PqrsComponent,
-    PqrsIndividualComponent
+    PqrsIndividualComponent,
+    BoletinComponent
   ],
   imports: [
     ReactiveFormsModule,
