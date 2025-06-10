@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NovedadesCarteraComponent } from './components/novedades-cartera/novedades-cartera.component';
+import { ConciliacionDiariaComponent } from './components/conciliacion-diaria/conciliacion-diaria.component';
 
 const routes: Routes = [
-  {path: 'novedades-cartera', component: NovedadesCarteraComponent}
+  {path: 'novedades-cartera', component: NovedadesCarteraComponent},
+  {path: 'conciliacion-diaria', component: ConciliacionDiariaComponent},
 ];
 
 @NgModule({

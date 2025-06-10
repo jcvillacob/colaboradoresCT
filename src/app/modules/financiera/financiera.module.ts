@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { FinancieraRoutingModule } from './financiera-routing.module';
 import { NovedadesCarteraComponent } from './components/novedades-cartera/novedades-cartera.component';
 import { FormsModule } from '@angular/forms';
+import { ConciliacionDiariaComponent } from './components/conciliacion-diaria/conciliacion-diaria.component';
 
 
 @NgModule({
   declarations: [
-    NovedadesCarteraComponent
+    NovedadesCarteraComponent,
+    ConciliacionDiariaComponent
   ],
   imports: [
     CommonModule,
