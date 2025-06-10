@@ -53,6 +53,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/conductor/conductor.module').then(m => m.ConductorModule),
     canActivate: [AuthGuard],
     data: { roles: ['Conductor'] }
+  },
+  {
+    path: 'informes',
+    loadChildren: () => import('./modules/Informes/informes.module').then(m => m.InformesModule),
+    canActivate: [AuthGuard],
+    data: { roles: ['Informes'] }
   }
 ];
 

@@ -1,0 +1,53 @@
+<h2 class="text-3xl font-bold pt-5 ml-5">Gráfico de Ventas</h2>
+
+<div class="p-6 space-y-6">
+  <!-- BUSCADOR -->
+  <div>
+    <!-- Input con sugerencias -->
+    <div class="relative">
+      <input
+        type="text"
+        placeholder="Buscar Clientes…"
+        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        [(ngModel)]="busqueda"
+        (input)="filtrarClientes()"
+        (keydown.enter)="agregarCliente(busqueda)"
+      />
+
+      <!-- Desplegable -->
+      <ul
+        *ngIf="sugerencias.length"
+        class="absolute z-10 w-full bg-white border rounded shadow max-h-60 overflow-y-auto"
+      >
+        <li
+          *ngFor="let s of sugerencias"
+          class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+          (click)="agregarCliente(s)"
+        >
+          {{ s }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Chips de clientes seleccionados -->
+    <div class="flex flex-wrap gap-2 mt-3 text-sm">
+      <span
+        *ngFor="let c of clientesSeleccionados"
+        class="bg-blue-200 text-blue-900 px-2 py-1 rounded-full flex items-center gap-1 text-sm"
+      >
+        {{ c }}
+        <button
+          (click)="quitarCliente(c)"
+          class="hover:text-red-600 font-bold leading-none"
+        >
+          &times;
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <!-- GRÁFICA -->
+  <div class="w-full bg-white shadow-md rounded-lg p-4">
+    <canvas #lineChart></canvas>
+  </div>
+</div>
