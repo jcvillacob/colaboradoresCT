@@ -25,16 +25,25 @@ export class ConciliacionDiariaComponent {
 
   onCross(): void {
     if (!this.files.length) return;
+
     this.concService.getEgresos(this.days + 1).subscribe({
       next: (egresos) => {
-        console.log('📥 Egresos obtenidos:', egresos);
-        this.concService
-          .obtenerMovimientos(this.files)
-          .then((tabla) => {
-            console.log('🔗 Tabla combinada lista:', tabla);
-          })
-          .catch((err) => console.error(err));
+        this.concService.obtenerMovimientos(this.files).then((documentos) => {
+          const { faltanEnDocumentos, faltanEnEgresos } =
+            this.concService.cruzarEgresosConDocumentos(egresos, documentos);
+
+          // descarga inmediata
+          this.concService.exportarResultado(
+            faltanEnDocumentos,
+            faltanEnEgresos
+          );
+
+          // Logging opcional
+          console.log('🟠 Solo en Egresos:', faltanEnDocumentos);
+          console.log('🔵 Solo en Documentos:', faltanEnEgresos);
+        });
       },
+      error: console.error,
     });
   }
 }
