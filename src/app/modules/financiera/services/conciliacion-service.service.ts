@@ -21,11 +21,11 @@ const EXCLUDE_PATTERNS = (EXCLUDE_PATTERNS_JSON as string[]).map((s) =>
 
 /* DTO visible para la UI */
 export interface MovimientoDTO {
-  Banco: string;       // "Davivienda" | "Bancolombia"
-  Cuenta: string;      // Nº de cuenta corriente
-  Fecha: string;       // ISO "YYYY-MM-DD"
-  DescMot: string;     // Concepto / Descripción
-  ValorTotal: number;  // Importe (+ abono | – débito)
+  Banco: string; // "Davivienda" | "Bancolombia"
+  Cuenta: string; // Nº de cuenta corriente
+  Fecha: string; // ISO "YYYY-MM-DD"
+  DescMot: string; // Concepto / Descripción
+  ValorTotal: number; // Importe (+ abono | – débito)
 }
 
 /* Tabla Empresa → Nº de cuenta por banco */
@@ -65,8 +65,9 @@ export class ConciliacionServiceService {
       const nombre = file.name.toLowerCase();
 
       /* Empresa según nombre de archivo (default → coorditanques) */
-      const empresa: 'coorditanques' | 'codiesel' =
-        /codiesel/.test(nombre) ? 'codiesel' : 'coorditanques';
+      const empresa: 'coorditanques' | 'codiesel' = /codiesel/.test(nombre)
+        ? 'codiesel'
+        : 'coorditanques';
 
       /* Banco según extensión */
       let banco: 'Davivienda' | 'Bancolombia';
@@ -88,6 +89,13 @@ export class ConciliacionServiceService {
         banco === 'Davivienda'
           ? await this.obtenerTablaExcel(file, banco, cuenta)
           : await this.obtenerTablaCsv(file, banco, cuenta);
+
+      console.log(movimientos.filter(
+          (m) =>
+            !EXCLUDE_PATTERNS.some((p) =>
+              m.DescMot.toUpperCase().trim().startsWith(p)
+            )
+        ));
 
       /* Filtra por patrón de exclusión (prefijo, mayúsculas) */
       out.push(
@@ -119,20 +127,27 @@ export class ConciliacionServiceService {
       fecha: (d.Fecha ?? '').slice(0, 10),
       valor: Number(d.ValorTotal),
     });
-    const key = (c: string, f: string, v: number) => `${c}|${f}|${v.toFixed(2)}`;
+    const key = (c: string, f: string, v: number) =>
+      `${c}|${f}|${v.toFixed(2)}`;
 
     const docs = new Set(
-      documentos.map(nD).map(({ cuenta, fecha, valor }) => key(cuenta, fecha, valor))
+      documentos
+        .map(nD)
+        .map(({ cuenta, fecha, valor }) => key(cuenta, fecha, valor))
     );
     const egrs = new Set(
-      egresos.map(nE).map(({ cuenta, fecha, valor }) => key(cuenta, fecha, valor))
+      egresos
+        .map(nE)
+        .map(({ cuenta, fecha, valor }) => key(cuenta, fecha, valor))
     );
 
     const cmpTol = (set: Set<string>, c: string, f: string, v: number) =>
       tolerancia
         ? [...set].some((k) => {
             const [C, F, V] = k.split('|');
-            return C === c && F === f && Math.abs(parseFloat(V) - v) <= tolerancia;
+            return (
+              C === c && F === f && Math.abs(parseFloat(V) - v) <= tolerancia
+            );
           })
         : set.has(key(c, f, v));
 
@@ -179,14 +194,12 @@ export class ConciliacionServiceService {
       'ValorTotal',
     ];
 
-    const ws1 = XLSX.utils.json_to_sheet(
-      faltanEnDocumentos.map(mapRowE),
-      { header: headers }
-    );
-    const ws2 = XLSX.utils.json_to_sheet(
-      faltanEnEgresos.map(mapRowD),
-      { header: headers }
-    );
+    const ws1 = XLSX.utils.json_to_sheet(faltanEnDocumentos.map(mapRowE), {
+      header: headers,
+    });
+    const ws2 = XLSX.utils.json_to_sheet(faltanEnEgresos.map(mapRowD), {
+      header: headers,
+    });
 
     const wb: XLSX.WorkBook = {
       SheetNames: ['Solo_en_Egresos', 'Solo_en_Documentos'],
@@ -197,9 +210,7 @@ export class ConciliacionServiceService {
     };
 
     const blob = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const nombre = `conciliacion_${new Date()
-      .toISOString()
-      .slice(0, 10)}.xlsx`;
+    const nombre = `conciliacion_${new Date().toISOString().slice(0, 10)}.xlsx`;
     saveAs(new Blob([blob]), nombre);
   }
 
@@ -218,11 +229,13 @@ export class ConciliacionServiceService {
         defval: '',
         blankrows: false,
       }),
-    })).find((h) => h.filas.length && h.filas.some((r) => r.some((c) => c !== '')));
+    })).find(
+      (h) => h.filas.length && h.filas.some((r) => r.some((c) => c !== ''))
+    );
 
     if (!hoja) throw new Error('El Excel no contiene datos útiles.');
 
-    const cuerpo = hoja.filas.slice(2, Math.max(2, hoja.filas.length - 3));
+    const cuerpo = hoja.filas.slice(2, Math.max(2, hoja.filas.length - 2));
 
     return cuerpo.map((row) => ({
       Banco: banco,
@@ -247,7 +260,7 @@ export class ConciliacionServiceService {
       .map((c) => ({
         Banco: banco,
         Cuenta: cuenta,
-        Fecha: this.ddmmyyyyToIso(c[3]),
+        Fecha: this.normalizarFecha8(c[3]),
         DescMot: c[7].trim(),
         ValorTotal: this.parsearNumeroCsv(c[5]),
       }));
@@ -268,7 +281,7 @@ export class ConciliacionServiceService {
     if (!isNaN(num) && /^\d+(\.\d+)?$/.test(value.toString())) {
       return this.excelSerialToIso(num);
     }
-    return this.ddmmyyyyToIso(value.toString());
+    return this.normalizarFecha8(value.toString());
   }
 
   private parsearNumeroExcel(v: any): number {
@@ -286,14 +299,25 @@ export class ConciliacionServiceService {
     return parseFloat(v.toString().trim()) || 0;
   }
 
-  private ddmmyyyyToIso(txt: string): string {
-    const limpio = txt.replace(/[^\d]/g, '');
-    if (limpio.length === 8) {
-      const dd = limpio.slice(0, 2);
-      const mm = limpio.slice(2, 4);
-      const yy = limpio.slice(4);
-      return `${yy}-${mm}-${dd}`;
+  /** Convierte DDMMYYYY o YYYYMMDD (8 dígitos) → YYYY-MM-DD */
+  private normalizarFecha8(txt: string): string {
+    const digits = txt.replace(/[^\d]/g, '');
+    if (digits.length !== 8) return txt.trim(); // no es un número de 8 dígitos
+
+    // ¿Empieza por año (≥1900) o por día?
+    const maybeYear = parseInt(digits.slice(0, 4), 10);
+    if (maybeYear >= 1900) {
+      // YYYYMMDD
+      const y = digits.slice(0, 4);
+      const m = digits.slice(4, 6);
+      const d = digits.slice(6, 8);
+      return `${y}-${m}-${d}`;
+    } else {
+      // DDMMYYYY
+      const d = digits.slice(0, 2);
+      const m = digits.slice(2, 4);
+      const y = digits.slice(4, 8);
+      return `${y}-${m}-${d}`;
     }
-    return txt.trim();
   }
 }
