@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ConciliacionServiceService } from '../../services/conciliacion-service.service';
+import { finalize } from 'rxjs/operators'; // ⬅️ importa finalize
 
 @Component({
   selector: 'app-conciliacion-diaria',
@@ -8,7 +9,8 @@ import { ConciliacionServiceService } from '../../services/conciliacion-service.
 })
 export class ConciliacionDiariaComponent {
   files: File[] = [];
-  days: number = 1;
+  days = 1;
+  isLoading = false;   // ⬅️ nuevo flag
 
   constructor(private concService: ConciliacionServiceService) {}
 
@@ -24,26 +26,31 @@ export class ConciliacionDiariaComponent {
   }
 
   onCross(): void {
-    if (!this.files.length) return;
+    if (!this.files.length || this.isLoading) return;
 
-    this.concService.getEgresos(this.days + 1).subscribe({
-      next: (egresos) => {
-        this.concService.obtenerMovimientos(this.files).then((documentos) => {
-          const { faltanEnDocumentos, faltanEnEgresos } =
-            this.concService.cruzarEgresosConDocumentos(egresos, documentos);
+    this.isLoading = true; // ⬅️ activa carga
 
-          // descarga inmediata
-          this.concService.exportarResultado(
-            faltanEnDocumentos,
-            faltanEnEgresos
-          );
+    this.concService
+      .getEgresos(this.days + 1)
+      .pipe(finalize(() => (this.isLoading = false))) // ⬅️ desactiva al final, éxito o error
+      .subscribe({
+        next: (egresos) => {
+          this.concService.obtenerMovimientos(this.files).then((documentos) => {
+            const { faltanEnDocumentos, faltanEnEgresos } =
+              this.concService.cruzarEgresosConDocumentos(egresos, documentos);
 
-          // Logging opcional
-          console.log('🟠 Solo en Egresos:', faltanEnDocumentos);
-          console.log('🔵 Solo en Documentos:', faltanEnEgresos);
-        });
-      },
-      error: console.error,
-    });
+            this.concService.exportarResultado(
+              faltanEnDocumentos,
+              faltanEnEgresos
+            );
+            console.log('🟠 Solo en Egresos:', faltanEnDocumentos);
+            console.log('🔵 Solo en Documentos:', faltanEnEgresos);
+          });
+        },
+        error: (err) => {
+          console.error(err);
+          // Podrías mostrar un toast aquí
+        },
+      });
   }
 }

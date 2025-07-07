@@ -1,5 +1,23 @@
 <h2 class="text-4xl font-bold pt-5 ml-5">Conciliación Diarias</h2>
 
+<!-- INFO BOX -->
+<div class="mx-5 mt-3">
+    <div class="bg-blue-50 border-l-4 border-blue-500/80 text-blue-700 rounded-md p-4 space-y-2">
+        <h3 class="font-semibold flex items-center gap-2">
+            Instrucciones rápidas
+        </h3>
+        <ul class="list-disc list-inside text-sm leading-relaxed">
+            <li>Selecciona uno o varios archivos CSV/XLS.</li>
+            <li>los nombres de los archivos deben ser el nombre de la empresa "coorditanques.csv", "codiesel.csv",
+                "coorditanques.xls" y "codiesel.xls".</li>
+            <li>Indica cuántos días hacia atrás quieres conciliar.</li>
+            <li>Haz clic en <strong>«Cruzar»</strong> y espera a que termine la magia ✨.</li>
+            <li>No cierres la ventana hasta que se descargue el resultado.</li>
+        </ul>
+    </div>
+</div>
+
+
 <div class="container mx-auto p-6">
     <div class="flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
 
@@ -21,10 +39,19 @@
                     <input id="daysInput" type="number" [(ngModel)]="days" min="1"
                         class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
-                <button (click)="onCross()"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition">
-                    Cruzar
+                <button (click)="onCross()" [disabled]="isLoading || !files.length" class="relative bg-green-600 hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed
+                    text-white font-semibold px-6 py-2 rounded-lg shadow transition flex items-center justify-center">
+                    <!-- Texto normal -->
+                    <span *ngIf="!isLoading">Cruzar</span>
+
+                    <!-- Spinner -->
+                    <svg *ngIf="isLoading" class="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="4">
+                        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                        <path d="M22 12a10 10 0 0 1-10 10" stroke-linecap="round" stroke-opacity="0.75"></path>
+                    </svg>
                 </button>
+
             </div>
         </div>
 
