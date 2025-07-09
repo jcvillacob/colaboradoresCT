@@ -202,7 +202,7 @@ export class ConciliacionServiceService {
     });
 
     const wb: XLSX.WorkBook = {
-      SheetNames: ['Solo_en_Egresos', 'Solo_en_Documentos'],
+      SheetNames: ['Solo_en_Egresos', 'Solo_en_Bancos'],
       Sheets: {
         Solo_en_Egresos: ws1,
         Solo_en_Documentos: ws2,
