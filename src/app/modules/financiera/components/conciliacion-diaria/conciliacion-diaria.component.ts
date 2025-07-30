@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ConciliacionServiceService } from '../../services/conciliacion-service.service';
-import { finalize } from 'rxjs/operators'; // ⬅️ importa finalize
+import { ConciliacionService } from '../../services/conciliacion.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-conciliacion-diaria',
@@ -10,9 +10,9 @@ import { finalize } from 'rxjs/operators'; // ⬅️ importa finalize
 export class ConciliacionDiariaComponent {
   files: File[] = [];
   days = 1;
-  isLoading = false;   // ⬅️ nuevo flag
+  isLoading = false;
 
-  constructor(private concService: ConciliacionServiceService) {}
+  constructor(private concService: ConciliacionService) {}
 
   onFilesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -34,8 +34,8 @@ export class ConciliacionDiariaComponent {
       .getEgresos(this.days + 1)
       .pipe(finalize(() => (this.isLoading = false))) // ⬅️ desactiva al final, éxito o error
       .subscribe({
-        next: (egresos) => {
-          this.concService.obtenerMovimientos(this.files).then((documentos) => {
+        next: (egresos: any) => {
+          this.concService.obtenerMovimientos(this.files).then((documentos: any) => {
             const { faltanEnDocumentos, faltanEnEgresos } =
               this.concService.cruzarEgresosConDocumentos(egresos, documentos);
 
@@ -47,7 +47,7 @@ export class ConciliacionDiariaComponent {
             console.log('🔵 Solo en Documentos:', faltanEnEgresos);
           });
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error(err);
           // Podrías mostrar un toast aquí
         },
