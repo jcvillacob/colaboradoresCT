@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ConciliacionService } from '../../services/conciliacion.service';
 import { finalize } from 'rxjs/operators';
+import { ConciliacionService } from '../../services/conciliacion.service';
+import { ReconciliacionParams } from '../../models/movimiento.model';
 
 @Component({
   selector: 'app-conciliacion-diaria',
@@ -11,46 +12,51 @@ export class ConciliacionDiariaComponent {
   files: File[] = [];
   days = 1;
   isLoading = false;
+  tolerancia = 0; // por si quieres exponerlo en UI
 
   constructor(private concService: ConciliacionService) {}
 
   onFilesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
-    Array.from(input.files).forEach((file) => {
+    for (const file of Array.from(input.files)) {
       const exists = this.files.some(
         (f) => f.name === file.name && f.size === file.size
       );
       if (!exists) this.files.push(file);
-    });
+    }
   }
 
   onCross(): void {
     if (!this.files.length || this.isLoading) return;
-
-    this.isLoading = true; // ⬅️ activa carga
+    this.isLoading = true;
 
     this.concService
       .getEgresos(this.days + 1)
-      .pipe(finalize(() => (this.isLoading = false))) // ⬅️ desactiva al final, éxito o error
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (egresos: any) => {
-          this.concService.obtenerMovimientos(this.files).then((documentos: any) => {
-            const { faltanEnDocumentos, faltanEnEgresos } =
-              this.concService.cruzarEgresosConDocumentos(egresos, documentos);
-
-            this.concService.exportarResultado(
-              faltanEnDocumentos,
-              faltanEnEgresos
+        next: async (egresos) => {
+          try {
+            const documentos = await this.concService.obtenerMovimientos(
+              this.files
             );
-            console.log('🟠 Solo en Egresos:', faltanEnDocumentos);
-            console.log('🔵 Solo en Documentos:', faltanEnEgresos);
-          });
+            const params: ReconciliacionParams = {
+              tolerancia: this.tolerancia,
+              invertirSignoEgresos: true,
+            };
+            const resultado = this.concService.cruzar(
+              egresos,
+              documentos,
+              params
+            );
+            this.concService.exportar(resultado);
+            console.log('🟠 Solo en Egresos:', resultado.faltanEnDocumentos);
+            console.log('🔵 Solo en Bancos:', resultado.faltanEnEgresos);
+          } catch (e) {
+            console.error('Error procesando archivos:', e);
+          }
         },
-        error: (err: any) => {
-          console.error(err);
-          // Podrías mostrar un toast aquí
-        },
+        error: (err) => console.error('Error obteniendo egresos:', err),
       });
   }
 }

@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { MovimientoDTO, Egreso } from '../models/movimiento.dto';
+import { MovimientoDTO, Egreso } from '../models/movimiento.model';
 
 export function exportarConciliacionAExcel(faltanEnDocumentos: Egreso[], faltanEnEgresos: MovimientoDTO[]): void {
   const mapRowE = (r: Egreso): MovimientoDTO => ({

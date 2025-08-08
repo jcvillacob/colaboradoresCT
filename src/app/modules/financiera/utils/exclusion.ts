@@ -4,7 +4,7 @@ export const EXCLUDE_PATTERNS = (EXCLUDE_PATTERNS_JSON as string[]).map((s) =>
   s.toUpperCase().trim()
 );
 
-import { MovimientoDTO } from '../models/movimiento.dto';
+import { MovimientoDTO } from '../models/movimiento.model';
 
 export function filtrarExcluidos(lista: MovimientoDTO[]): MovimientoDTO[] {
   return lista.filter(
