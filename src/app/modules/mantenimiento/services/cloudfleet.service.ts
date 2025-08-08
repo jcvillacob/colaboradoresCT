@@ -12,10 +12,18 @@ export class CloudfleetService {
   constructor(private http: HttpClient) {}
 
   getLastLogs(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.cloudfleetURL}/cloudfleet/work-orders/last-logs`);
+    return this.http.get<any[]>(
+      `${this.cloudfleetURL}/cloudfleet/work-orders/last-logs`
+    );
   }
 
   updateCloudfleet(): Observable<any[]> {
     return this.http.get<any[]>(`${this.cloudfleetURL}/cloudfleet/work-orders`);
+  }
+
+  updateCloudfleetMonthly(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.cloudfleetURL}/cloudfleet/work-orders/sync-monthly`
+    );
   }
 }
